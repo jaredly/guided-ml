@@ -1,21 +1,38 @@
 #!/usr/bin/env python
 
+def parse_test(text):
+    pass
+
+def feature_function(feature):
+    pass
+
+def make_training_data(instances, features):
+    ffunctions = map(feature_function, features)
+    training_data = []
+    for inst in instances:
+        training = [inst['id'], inst['class']]
+        for feature in ffunctions:
+            training.append(feature(inst['data']))
+        training_data.append(training)
+    return training_data
+
 class DAO:
     def __init__(self, pl):
         self.pl = pl
 
     def new_project(self, name, zipfile):
         newid = self.pl.add_project(name)
-        tuple(self.add_data(newid, zipfile))
+        self.add_data(newid, zipfile)
+        return newid
 
     def update_name(self, id, name):
         return self.pl(id, name)
 
     def update_data(self, id, data):
         self.pl.drop_data(id)
+        raw_data = self.add_data(id, data)
         features = self.pl.get_features()
-        training_data = []
-        for inum, text in self.add_data(id, data):
+        return make_training_data(raw_data, features)
 
     def parse_zip(self, data):
         zipfile = ZipFile(data, 'r')
@@ -33,12 +50,33 @@ class DAO:
             if vid in all_files:
                 vdata = zipfile.open(vid).read()
             text = zipfile.open(name).read()
-            yield inum, text, idata, vdata
+            iclass = name.split('-')[0]
+            yield inum, name, iclass, text, idata, vdata
 
     def add_data(self, id, data):
+        instances = []
+        keys = [] 
+        classes = set()
         with self.pl.write_batch() as wb:
-            for inum, text, idata, vdata in self.parse_zip(data):
-                self.pl.write_instance(id, inum, text, idata, vdata, wb)
-                yield inum, text, idata is not None, vdata is not None
+            for inum, filename, iclass, text, idata, vdata in self.parse_zip(data):
+                self.pl.write_inst_meta(id, inum, idata, vdata, wb)
+
+                classes.add(iclass)
+                data, keys = parse_text(text)
+                if gkeys is not None and keys != gkeys:
+                    raise Exception('Parse failure: all instances must have\
+                            the same column headers. {}: {}'.format(inum, filename))
+                instances.append({
+                    "id": inum,
+                    "data": parse_text(text),
+                    "filename": filename,
+                    "class": iclass,
+                    "has_img": idata is not None,
+                    "has_vid": vdata is not None
+                })
+                # yield inum, text, idata is not None, vdata is not None
+            self.pl.write_instances(id, instances, wb)
+        return instances
+
 
 # vim: et sw=4 sts=4

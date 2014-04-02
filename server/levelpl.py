@@ -38,12 +38,14 @@ class LevelPL:
             names.append((id, v))
         return names
 
-    def write_instance(self, id, inum, text, idata, vdata, wb):
+    def write_inst_meta(self, id, inum, idata, vdata, wb):
         if idata:
             wb.put(b'file:{}:{}:img'.format(id, inum), idata)
         if vdata:
             wb.put(b'file:{}:{}:vid'.format(id, inum), vdata)
-        wb.put(b'file:{}:{}'.format(id, inum), text)
+
+    def write_instances(self, pid, instances, wb):
+        wb.put(b'raw_data:{}'.format(pid), json.dumps(instances))
 
     def write_batch(self):
         return self.db.write_batch()

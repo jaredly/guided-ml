@@ -10,28 +10,46 @@ from levelpl import LevelPL
 app = Flask(__name__)
 dao = DAO(LevelPL())
 
-@app.route('/project/new', methods=['POST'])
+def get(route):
+    return app.route(route, methods=['GET'])
+
+def delete(route):
+    return app.route(route, methods=['DELETE'])
+
+def post(route):
+    return app.route(route, methods=['POST'])
+
+## Projcts
+
+@post('/project/new')
 def new_project():
     data = request.files['file']
     name = request.form['name']
     id = dao.new_project(name, data)
-    return jsonify(id=id, name=name)
+    # return jsonify(id=id, name=name)
+    fail # return a redirect?
 
-@app.route('/project/', methods=['GET'])
+@get('/project/')
 def list_projects():
     return jsonify(names=dao.list_projects())
 
-@app.route('/project/<int:id>/name', methods=['POST'])
+@get('/project/<int:id>')
+def get_project(id):
+    return jsonify(data=dao.get_project(id))
+
+@post('/project/<int:id>/name')
 def update_name(id):
     dao.update_name(id, request.json['name'])
     return flask.Response(status=204)
 
-@app.route('/project/<int:id>/data', methods=['POST'])
+@post('/project/<int:id>/data')
 def update_data(id):
     raw_data, training_data = dao.update_data(id, request.files['file'])
     return jsonify(raw_data=raw_data, training_data=training_data)
 
-@app.route('/project/<int:id>/feature/new', methods=['POST'])
+## Features
+
+@post('/project/<int:id>/feature/new')
 def new_feature(id):
     name = request.json['name']
     type = request.json['type']
@@ -39,16 +57,26 @@ def new_feature(id):
     fid, feature_column = dao.add_feature(id, name, type, args)
     return jsonify(fid=id, feature_column=feature_column)
 
-@app.route('/project/<int:id>/feature/<int:fid>/name', method=['POST']))
+@delete('/project/<int:id>/feature/<int:fid>')
+def update_feature_name(id, fid):
+    dao.remove_feature(id, fid)
+    return flask.Response(status=204)
+
+@post('/project/<int:id>/feature/<int:fid>/name')
 def update_feature_name(id, fid):
     feature_column = dao.update_feature_name(id, fid, request.json['name'])
     return jsonify(feature_column=feature_column)
 
-@app.route('/project/<int:id>/feature/<int:fid>/args', method=['POST']))
+@post('/project/<int:id>/feature/<int:fid>/args')
 def update_feature_args(id, fid):
     feature_column = dao.update_feature_args(id, fid, request.json['args'])
     return jsonify(feature_column=feature_column)
 
+## Learners
+
+@post('/project/<int:id>/learner/<int:fid>/args')
+def new_learner(id):
+    pass
 
 
 
