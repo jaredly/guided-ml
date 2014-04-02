@@ -1,34 +1,35 @@
-#!/usr/bin/env python
-from flask import Flask, request, session
-import leveldb
+#!/usr/bin/env python3
+from flask import Flask, request, session, jsonify
+import plyvel
 import json
 import os
+
+from dao import LevelDB
+
 app = Flask(__name__)
-db = leveldb.LevelDB(os.path.join(os.path.dirname(__file__), 'db'))
+db = LevelDB(plyvel.DB(os.path.join(os.path.dirname(__file__), 'db'), create_if_missing=True))
 
 @app.route('/projects/new', methods=['POST'])
 def new_project():
     data = request.files['file']
     name = request.form['name']
-    maxid = 0
-    for k, v in db.RangeIter('name:', 'name:\xFF'):
-        at = int(k.split(':')[1])
-        if at > maxid:
-            maxid = at
-    newid = maxid + 1
-
-    db.Put('name:{}'.format(newid), name)
-    db.Put('file:{}'.format(newid), data.read())
+    id = db.new_project(name, data)
+    return jsonify(id=id, name=name)
 
 @app.route('/projects/', methods=['GET'])
 def list_projects():
-    names = []
-    for k, v in db.RangeIter('name:', 'name:\xFF'):
-        id = int(k.split(':')[1])
-        names.append((id, v))
-    return json.dumps(names)
+    return jsonify(names=db.list_projects())
 
-@app.route('/parojets/<int:id>', methods=['POST'])
+@app.route('/project/<int:id>/name', methods=['POST'])
+def update_name(id):
+    db.update_name(id, request.form['name'])
+    return flask.Response(status=204)
+
+@app.route('/project/<int:id>/data', methods=['POST'])
+def update_data(id):
+    training_data = db.update_data(id, request.files['file'])
+    # recalculate the training_data
+    return jsonify(training_data)
 
 
 
