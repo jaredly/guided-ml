@@ -30,8 +30,11 @@ class MemPL(PL):
         del self.files[id]
 
     def get_features(self, id):
-        features = sorted(self.features[id].items())
-        return [f for _, f in features]
+        # features = sorted(self.features[id].items())
+        return self.features[id].copy()
+    
+    def get_learners(self, id):
+        return self.learners[id].copy()
 
     def write_instances(self, id, instances, metas):
         self.instances[id] = instances
@@ -40,15 +43,35 @@ class MemPL(PL):
     def get_raw_data(self, id):
         return self.instances[id]
 
-    def add_feature(self, id, name, type, args):
+    def get_vid(self, id, instid):
+        try:
+            return self.metas[id][instid]['img']
+        except IndexError:
+            return None
+
+    def get_vid(self, id, instid):
+        try:
+            return self.metas[id][instid]['vid']
+        except IndexError:
+            return None
+
+    def add_feature(self, id, feature):
         fid = self.nextfid[id]
         self.nextfid[id] += 1
-        self.features[id][fid] = {
-            'name': name,
-            'type': type,
-            'args': args
-        }
+        self.features[id][fid] = feature
         return fid
+
+    def add_learner(self, id, learner):
+        lid = self.nextlid[id]
+        self.nextlid[id] += 1
+        self.learners[id][lid] = learner
+        return lid
+
+    def update_learner(self, id, lid, name, args):
+        if name is not None:
+            self.learners[id][lid]['name'] = name
+        if args is not None:
+            self.learners[id][lid]['args'] = args
 
     def remove_feature(self, id, fid):
         del self.features[id][fid]

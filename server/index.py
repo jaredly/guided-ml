@@ -57,12 +57,8 @@ def new_feature(id):
     name = req.json['name']
     type = req.json['type']
     args = req.json['args']
-    fid, feature_column = dao.add_feature(id, name, type, args)
-    return jsonify(fid=fid, feature_column=feature_column, feature={
-        'name': name,
-        'type': type.
-        'args': args
-    })
+    fid, feature_column, feature = dao.add_feature(id, name, type, args)
+    return jsonify(fid=fid, feature_column=feature_column, feature=feature)
 
 @delete('/project/<int:id>/feature/<int:fid>')
 def update_feature_name(id, fid):
