@@ -13,6 +13,9 @@ class MemPL(PL):
         self.instances = {}
         self.metas = {}
 
+    def list_projects(self):
+        return self.names.items()
+
     def update_name(self, id, name):
         self.names[id] = name
 

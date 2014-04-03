@@ -7,6 +7,9 @@ class DAO:
     def __init__(self, pl):
         self.pl = pl
 
+    def list_projects(self):
+        return self.pl.list_projects()
+
     def new_project(self, name, zipfile):
         newid = self.pl.add_project(name)
         self.add_data(newid, zipfile)
@@ -47,7 +50,7 @@ class DAO:
 
     def add_data(self, id, rawzip):
         instances = []
-        global_header = []
+        global_header = None
         classes = set()
         metas = {}
         for inum, filename, iclass, header, data, mdata, idata, vdata in self.parse_zip(rawzip):
