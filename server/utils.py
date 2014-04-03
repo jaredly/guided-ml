@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import csv
+
 def parse_csv(text):
     reader = csv.reader(text.split('\n'))
     header = reader.next()
@@ -44,7 +46,7 @@ def make_training_data(instances, features):
     return training_data
 
 def make_training_columnd(instances, feature):
-    ffunction = feature_function(features)
+    ffunction = feature_function(feature)
     return [ffunction(inst['data']) for inst in instances]
 
 

@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+import json
 import plyvel
 from pl import PL
+
+from os.path import join, dirname
 
 class LevelPL(PL):
     def __init__(self, dbpath=None):
@@ -10,8 +13,8 @@ class LevelPL(PL):
         self.db = plyvel.DB(dbpath, create_if_missing=True)
 
     def next_id(self):
-        id = int(db.get(b'next_id', b'0'))
-        db.put(b'next_id', id + 1)
+        id = int(self.db.get(b'next_id', b'0'))
+        self.db.put(b'next_id', id + 1)
         return id
 
     def update_name(self, id, name):
@@ -34,7 +37,7 @@ class LevelPL(PL):
 
     def list_projects(self):
         names = []
-        for k, v in db.iterator(start=b'name:', stop=b'name:\xFF'):
+        for k, v in self.db.iterator(start=b'name:', stop=b'name:\xFF'):
             id = int(k.split(':')[1])
             names.append((id, v))
         return names

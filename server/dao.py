@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from utils import *
+from zipfile import ZipFile
+import utils
 
 class DAO:
     def __init__(self, pl):
@@ -18,7 +19,7 @@ class DAO:
         self.pl.drop_data(id)
         raw_data = self.add_data(id, data)
         features = self.pl.get_features()
-        return make_training_data(raw_data, features)
+        return utils.make_training_data(raw_data, features)
 
     def parse_zip(self, rawzip):
         zipfile = ZipFile(rawzip, 'r')
@@ -38,38 +39,40 @@ class DAO:
             if vid in all_files:
                 vdata = zipfile.open(vid).read()
             if meta in all_files:
-                mdata = parse_meta(zipfile.open(meta).read())
+                mdata = utils.parse_meta(zipfile.open(meta).read())
             text = zipfile.open(name).read()
-            header, data = parse_csv(text)
+            header, data = utils.parse_csv(text)
             iclass = name.split('-')[0]
             yield inum, name, iclass, header, data, mdata, idata, vdata
 
-    def add_data(self, id, data):
+    def add_data(self, id, rawzip):
         instances = []
-        keys = []
+        global_header = []
         classes = set()
-            metas = {}
-            for inum, filename, iclass, text, idata, vdata in self.parse_zip(data):
-                metas[inum] = {
-                    'img': idata,
-                    'vid': vdata
-                }
+        metas = {}
+        for inum, filename, iclass, header, data, mdata, idata, vdata in self.parse_zip(rawzip):
+            metas[inum] = {
+                'img': idata,
+                'vid': vdata
+            }
 
-                classes.add(iclass)
-                keys, data = parse_csv(text)
-                if gkeys is not None and keys != gkeys:
-                    raise Exception('Parse failure: all instances must have\
-                            the same column headers. {}: {}'.format(inum, filename))
-                instances.append({
-                    "id": inum,
-                    "data": parse_csv(text),
-                    "filename": filename,
-                    "class": iclass,
-                    "has_img": idata is not None,
-                    "has_vid": vdata is not None
-                })
-                # yield inum, text, idata is not None, vdata is not None
-            self.pl.write_instances(id, instances, metas)
+            classes.add(iclass)
+            if global_header is None:
+                global_header = header
+            if header != global_header:
+                raise Exception('Parse failure: all instances must have\
+                        the same column headers. {}: {}'.format(inum, filename))
+            instances.append({
+                "id": inum,
+                "data": data,
+                "filename": filename,
+                "class": iclass,
+                "meta": mdata,
+                "has_img": idata is not None,
+                "has_vid": vdata is not None
+            })
+            # yield inum, text, idata is not None, vdata is not None
+        self.pl.write_instances(id, instances, metas)
         return instances
 
     # features
@@ -78,7 +81,7 @@ class DAO:
         raw_data = self.pl.get_raw_data()
         feature = {'name': name, 'type': type, 'args': args}
         fid = self.pl.add_feature(id, feature)
-        return fid, make_training_column(raw_data, feature), feature
+        return fid, utils.make_training_column(raw_data, feature), feature
 
     def remove_feature(self, id, fid):
         self.pl.remove_feature(id, fid)
@@ -93,7 +96,7 @@ class DAO:
 
     def get_compiled(self, id, lid, target):
         features, trained, learner = self.trained_learner(id, lid)
-        return compile_learner(target, features, trained, learner)
+        return utils.compile_learner(target, features, trained, learner)
 
     def has_target(self, target):
         return target == 'orange'
@@ -109,7 +112,7 @@ class DAO:
 
     def add_learner(self, id, name, type, args):
         learner = {
-            'name': name.
+            'name': name,
             'type': type,
             'args': args
         }
@@ -119,30 +122,30 @@ class DAO:
         features = self.pl.get_features(id)
         learner  = self.pl.get_learner(id, lid)
         raw_data = self.pl.get_raw_data(id)
-        data     = make_training_data(raw_data, features)
+        data     = utils.make_training_data(raw_data, features)
 
-        trained = train_learner(learner, raw_data)
+        trained = utils.train_learner(learner, data)
         return features, trained, learner
 
     def make_data(self, id):
         features = self.pl.get_features(id)
         raw_data = self.pl.get_raw_data(id)
-        data     = make_training_data(raw_data, features)
+        data     = utils.make_training_data(raw_data, features)
         return data
 
     def train(self, id, lid):
         learner  = self.pl.get_learner(id, lid)
         data = self.make_data(id)
 
-        return validate_learner(learner, data)
+        return utils.validate_learner(learner, data)
 
     def train_all(self, id):
         learners = self.pl.get_learners(id)
-        data = make_data(id)
+        data = self.make_data(id)
         confused = {}
 
         for k, learner in learners.items():
-            confused[k] = validate_learner(learner, data)
+            confused[k] = utils.validate_learner(learner, data)
 
         return confused
 

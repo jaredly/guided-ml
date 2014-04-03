@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-from flask import Flask, request, session, jsonify, make_response
-import plyvel
-import json
-import os
+from flask import Flask, request, jsonify, make_response
+import flask
+import time
 
 from dao import DAO
-from levelpl import LevelPL
+# from levelpl import LevelPL
 from mempl import MemPL
 
 app = Flask(__name__)
@@ -28,9 +27,11 @@ def post(route):
 def new_project():
     data = req.files['file']
     name = req.form['name']
-    id = dao.new_project(name, data)
+    dao.new_project(name, data)
+    return flask.redirect('/')
+    # return flask.Response(status=204)
     # return jsonify(id=id, name=name)
-    fail # return a redirect?
+    # fail # return a redirect?
 
 @get('/project/')
 def list_projects():
@@ -61,7 +62,7 @@ def new_feature(id):
     return jsonify(fid=fid, feature_column=feature_column, feature=feature)
 
 @delete('/project/<int:id>/feature/<int:fid>')
-def update_feature_name(id, fid):
+def remove_feature(id, fid):
     dao.remove_feature(id, fid)
     return flask.Response(status=204)
 
@@ -123,6 +124,7 @@ def get_img(id, instid):
     return res
 
 @get('/project/<int:id>/vid/<int:instid>')
+def get_vid(id, instid):
     data = dao.get_vid(id, instid)
     res = make_response(data, 200)
     res.headers['Content-type'] = 'video/webm'

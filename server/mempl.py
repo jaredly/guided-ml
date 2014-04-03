@@ -43,7 +43,7 @@ class MemPL(PL):
     def get_raw_data(self, id):
         return self.instances[id]
 
-    def get_vid(self, id, instid):
+    def get_img(self, id, instid):
         try:
             return self.metas[id][instid]['img']
         except IndexError:
