@@ -6,9 +6,10 @@ import os
 
 from dao import DAO
 from levelpl import LevelPL
+from mempl import MemPL
 
 app = Flask(__name__)
-dao = DAO(LevelPL())
+dao = DAO(MemPL())
 
 def get(route):
     return app.route(route, methods=['GET'])

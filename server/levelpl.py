@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import plyvel
+from pl import PL
 
-class LevelPL:
+class LevelPL(PL):
     def __init__(self, dbpath=None):
         if dbpath is None:
             dbpath = join(dirname(__file__), 'db')
@@ -38,17 +39,14 @@ class LevelPL:
             names.append((id, v))
         return names
 
-    def write_inst_meta(self, id, inum, idata, vdata, wb):
-        if idata:
-            wb.put(b'file:{}:{}:img'.format(id, inum), idata)
-        if vdata:
-            wb.put(b'file:{}:{}:vid'.format(id, inum), vdata)
-
-    def write_instances(self, pid, instances, wb):
-        wb.put(b'raw_data:{}'.format(pid), json.dumps(instances))
-
-    def write_batch(self):
-        return self.db.write_batch()
+    def write_instances(self, pid, instances, metas):
+        with self.db.write_batch() as wb:
+            for id, (inum, idata, vdata) in metas.items():
+                if idata:
+                    wb.put(b'file:{}:{}:img'.format(id, inum), idata)
+                if vdata:
+                    wb.put(b'file:{}:{}:vid'.format(id, inum), vdata)
+            wb.put(b'raw_data:{}'.format(pid), json.dumps(instances))
 
     def add_project(self, name):
         newid = self.next_id()

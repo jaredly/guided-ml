@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-def parse_test(text):
+def parse_text(text):
     pass
 
 def feature_function(feature):
@@ -57,9 +57,9 @@ class DAO:
         instances = []
         keys = [] 
         classes = set()
-        with self.pl.write_batch() as wb:
+            metas = {}
             for inum, filename, iclass, text, idata, vdata in self.parse_zip(data):
-                self.pl.write_inst_meta(id, inum, idata, vdata, wb)
+                metas[id] = inum, idata, vdata
 
                 classes.add(iclass)
                 data, keys = parse_text(text)
@@ -75,7 +75,7 @@ class DAO:
                     "has_vid": vdata is not None
                 })
                 # yield inum, text, idata is not None, vdata is not None
-            self.pl.write_instances(id, instances, wb)
+            self.pl.write_instances(id, instances, metas)
         return instances
 
 
