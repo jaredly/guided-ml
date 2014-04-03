@@ -16,6 +16,10 @@ def make_training_data(instances, features):
         training_data.append(training)
     return training_data
 
+def make_training_columnd(instances, feature):
+    ffunction = feature_function(features)
+    return [ffunction(inst['data']) for inst in instances]
+
 class DAO:
     def __init__(self, pl):
         self.pl = pl
@@ -78,5 +82,47 @@ class DAO:
             self.pl.write_instances(id, instances, metas)
         return instances
 
+    # features
+
+    def add_feature(self, id, name, type, args):
+        raw_data = self.pl.get_raw_data()
+        fid = self.pl.add_feature(id, name, type, args)
+        feature = {'name': name, 'type': type, 'args': args}
+        return fid, make_training_column(raw_data, feature)
+
+    def remove_feature(self, id, fid):
+        pass
+
+    def update_feature_name(self, id, fid, name):
+        pass
+
+    def update_feature_args(self, id, fid, args):
+        pass
+
+    # learners
+    
+    def get_compiled(self, id, lid, target):
+        raise Exception('Not implemented')
+
+    def has_target(self, target):
+        return target == 'orange'
+
+    def train(self, id, lid):
+        pass
+
+    def train_all(self, id):
+        pass
+
+    def get_vid(self, id, instid):
+        pass
+
+    def get_img(self, id, instid):
+        pass
+
+    def update_learner(self, id, lid, name, args):
+        pass
+
+    def add_learner(self, id, name, type, args):
+        pass
 
 # vim: et sw=4 sts=4
