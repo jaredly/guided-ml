@@ -20,6 +20,7 @@ def parse_csv(text):
             it.append(item)
         data.append(it)
     return header, data
+<<<<<<< HEAD
 '''
 
 def parse_meta(text):
