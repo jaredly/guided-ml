@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from features import make_feature, list_features
+from learners import make_learner
 import csv
 
 '''
@@ -29,11 +30,13 @@ def parse_meta(text):
 def train_learner(learner, data):
     '''takes a learner spec and training data
     returns a trained learner'''
+    lcls = make_learner(learner)
     return None
 
 def validate_learner(learner, data):
     '''takes a learner spec and training data
     returns a confusion matrix with the ids of the original data'''
+    lcls = make_learner(learner)
     return None
 
 def make_training_data(instances, header, features):
@@ -53,6 +56,8 @@ def make_training_column(instances, feature):
 def list_learners():
     return []
 
+def pandas_to_orange(dframe):
+    pass
 
 
 # vim: et sw=4 sts=4

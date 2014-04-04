@@ -47,7 +47,12 @@ def average(data, dimension):
     '''Computes the average of a dimention'''
     return data[dimension].mean()
 
-@feature({'code': '# use data\noutput = len(data)'})
+@feature({'code': {
+    'type': 'str',
+    'description': 'Put your python code here, and set the resulting value to `output`.\
+                    `data` is a pandas.DataFrame containing the raw data for a single instance.',
+    'default': '# use data\noutput = len(data)'
+    }})
 def custom(data, code):
     compiled = compile(code, 'custom-feature', 'exec')
     scope = {'data': data, 'output': 0}
