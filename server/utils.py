@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+import features
 import csv
 
+'''
 def parse_csv(text):
     reader = csv.reader(text.split('\n'))
     header = reader.next()
@@ -18,7 +20,8 @@ def parse_csv(text):
             it.append(item)
         data.append(it)
     return header, data
-
+ '''
+ 
 def parse_meta(text):
     return dict(line.strip().split('=') for line in text.split('\n'))
 
@@ -33,9 +36,10 @@ def validate_learner(learner, data):
     return None
 
 def feature_function(feature):
-    pass
 
-def make_training_data(instances, features):
+    raise Exception('not implemented')
+
+def make_training_data(instances, header, features):
     ffunctions = map(feature_function, features)
     training_data = []
     for inst in instances:
@@ -45,7 +49,7 @@ def make_training_data(instances, features):
         training_data.append(training)
     return training_data
 
-def make_training_columnd(instances, feature):
+def make_training_column(instances, feature):
     ffunction = feature_function(feature)
     return [ffunction(inst['data']) for inst in instances]
 

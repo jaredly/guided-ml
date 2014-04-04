@@ -9,9 +9,11 @@ class MemPL(PL):
         self.nextlid = {}
         self.names = {}
         self.features = {}
+        self.learners = {}
         self.files = {}
         self.instances = {}
         self.metas = {}
+        self.headers = {}
 
     def list_projects(self):
         return self.names.items()
@@ -19,11 +21,16 @@ class MemPL(PL):
     def update_name(self, id, name):
         self.names[id] = name
 
+    def get_name(self, id):
+        return self.names[id]
+
     def add_project(self, name):
         id = self.nextid
         self.nextid += 1
         self.update_name(id, name)
         self.features[id] = {}
+        self.learners[id] = {}
+        self.headers[id] = []
         self.files[id] = {}
         self.nextfid[id] = 0
         self.nextlid[id] = 0
@@ -39,9 +46,13 @@ class MemPL(PL):
     def get_learners(self, id):
         return self.learners[id].copy()
 
-    def write_instances(self, id, instances, metas):
+    def write_instances(self, id, instances, metas, headers):
         self.instances[id] = instances
         self.metas[id] = metas
+        self.headers[id] = headers
+
+    def get_headers(self, id):
+        return self.headers[id]
 
     def get_raw_data(self, id):
         return self.instances[id]

@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+
+from index import make_app
+import json
+# from StringIO import StringIO
+from io import BytesIO
+from zipfile import ZipFile
+
+def make_example_zipfile():
+    text = 'a,b,c\n1,2,3\n2,3,4\n0,0,0'
+    meta = 'person=jared\nawesome=true'
+    sio = BytesIO()
+    zf = ZipFile(sio, 'w')
+    zf.writestr('one-0.csv', text)
+    zf.writestr('one-0.meta', meta)
+    zf.close()
+    sio.seek(0)
+    return sio
+
+import pytest
+
+@pytest.fixture
+def app():
+    app = make_app()
+    app.config['TESTING'] = True
+    return app.test_client()
+
+def test_get_empty_projects(app):
+    rv = app.get('/project/')
+    assert rv.status_code == 200
+    data = json.loads(rv.data)
+    assert len(data['names']) == 0
+
+def test_add_project(app):
+    rv = app.post('/project/new', data=dict(
+        file=(make_example_zipfile(), 'notazip.zip'),
+        name='The best'
+    ))
+    assert rv.status_code == 302
+
+@pytest.fixture
+def p_app(app):
+    rv = app.post('/project/new', data=dict(
+        file=(make_example_zipfile(), 'notazip.zip'),
+        name='The best'
+    ))
+    return app
+
+class TestProjectStuff:
+    def test_get_project(self, p_app):
+        rv = p_app.get('/project/0')
+        data = json.loads(rv.data)
+        assert data['data']['name'] == 'The best'
+        assert data['data']['features'] == {}
+        assert data['data']['learners'] == {}
+        assert data['data']['headers'] == ['a', 'b', 'c']
+        assert data['data']['raw_data'][0] == {
+            'class': 'one',
+            'data': [
+                [1, 2, 3],
+                [2, 3, 4],
+                [0, 0, 0]
+            ],
+            'filename': 'one-0.csv',
+            'has_img': False,
+            'has_vid': False,
+            'id': 0,
+            'meta': {'awesome': 'true', 'person': 'jared'}
+        }
+
+        '''
+    def test_add_feature(self, p_app):
+        rv = p_app.post('/project/0/feature/new', data=json.dumps(dict(
+            name='Awesome',
+            type='average',
+            args={'dimension': 'x'}
+        )), content_type='application/json')
+        assert rv.status_code == 200
+        '''
+
+
+
+# vim: et sw=4 sts=4
