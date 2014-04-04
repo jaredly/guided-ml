@@ -1,6 +1,10 @@
 /** @jsx React.DOM */
 
+var IndexPage = require('./pages/index.jsx')
+  , ProjectPage = require('./pages/project.jsx')
+
 var App = module.exports = React.createClass({
+  displayName: 'App',
   getDefaultProps: function () {
     return {
       dao: null
@@ -8,16 +12,26 @@ var App = module.exports = React.createClass({
   },
   getInitialState: function () {
     return {
-      projects: null
+      page: {
+        name: 'index'
+      }
     }
   },
-  loading: function () {
-    return <div className='loading'>Loading...</div>
+  getPage: function () {
+    return {
+      index: IndexPage,
+      project: ProjectPage
+    }[this.state.page.name]({
+      goToPage: this.goToPage,
+      args: this.state.page.args,
+      dao: this.props.dao
+    });
+  },
+  goToPage: function (name, args) {
+    this.setState({page: {name: name, args: args}});
   },
   render: function () {
-    if (!this.state.projects) {
-      return this.loading()
-    }
+    return this.getPage()
   }
 })
 
