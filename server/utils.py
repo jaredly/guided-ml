@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from features import make_feature
+from features import make_feature, list_features
 import csv
 
 '''
@@ -23,7 +23,7 @@ def parse_csv(text):
 '''
 
 def parse_meta(text):
-    return dict(line.strip().split('=') for line in text.split('\n'))
+    return dict(line.strip().split('=') for line in text.decode('ascii').split('\n'))
 
 def train_learner(learner, data):
     '''takes a learner spec and training data
@@ -48,6 +48,10 @@ def make_training_data(instances, header, features):
 def make_training_column(instances, feature):
     ffunction = make_feature(feature)
     return [ffunction(inst['data']) for inst in instances]
+
+def list_learners():
+    return []
+
 
 
 # vim: et sw=4 sts=4

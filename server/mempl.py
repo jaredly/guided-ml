@@ -16,7 +16,7 @@ class MemPL(PL):
         self.headers = {}
 
     def list_projects(self):
-        return self.names.items()
+        return list(self.names.items())
 
     def update_name(self, id, name):
         self.names[id] = name

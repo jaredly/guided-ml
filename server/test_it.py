@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from index import make_app
+from app import make_app
 import json
 # from StringIO import StringIO
 from io import BytesIO
@@ -28,7 +28,7 @@ def app():
 def test_get_empty_projects(app):
     rv = app.get('/project/')
     assert rv.status_code == 200
-    data = json.loads(rv.data)
+    data = json.loads(rv.data.decode('utf8'))
     assert len(data['names']) == 0
 
 def test_add_project(app):
@@ -49,7 +49,7 @@ def p_app(app):
 class TestProjectStuff:
     def test_get_project(self, p_app):
         rv = p_app.get('/project/0')
-        data = json.loads(rv.data)
+        data = json.loads(rv.data.decode('utf8'))
         assert data['data']['name'] == 'The best'
         assert data['data']['features'] == {}
         assert data['data']['learners'] == {}
@@ -75,13 +75,21 @@ class TestProjectStuff:
             args={'dimension': 'b'}
         )), content_type='application/json')
         assert rv.status_code == 200
-        data = json.loads(rv.data)
+        data = json.loads(rv.data.decode('utf8'))
         assert data['feature_column'] == [5/3.0]
 
         rv = p_app.delete('/project/0/feature/0')
         assert rv.status_code == 204
 
-
+    def test_add_custom(self, p_app):
+        rv = p_app.post('/project/0/feature/new', data=json.dumps(dict(
+            name='Mything',
+            type='custom',
+            args={'code': 'output = 34'}
+        )), content_type='application/json')
+        assert rv.status_code == 200
+        data = json.loads(rv.data.decode('utf8'))
+        assert data['feature_column'] == [34]
 
 
 # vim: et sw=4 sts=4

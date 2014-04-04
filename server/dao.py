@@ -8,8 +8,7 @@ def depandas(instances):
     ready = []
     for inst in instances:
         read = inst.copy()
-        dframe = read['data']
-        print dframe
+        dframe = read['data'].astype('object')
         read['data'] = [list(dframe.iloc[i]) for i in range(len(dframe))]
         ready.append(read)
     return ready

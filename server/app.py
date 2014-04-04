@@ -21,6 +21,16 @@ def make_app():
     def post(route):
         return app.route(route, methods=['POST'])
 
+    ## Misc
+
+    @get('/features')
+    def get_features():
+        return jsonify(features=utils.list_features())
+
+    @get('/learners')
+    def get_learner():
+        return jsonify(learners=utils.list_learners())
+
     ## Projcts
 
     @post('/project/new')
