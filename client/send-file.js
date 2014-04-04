@@ -40,7 +40,7 @@ function sendFile(target, name, file, data) {
         }
         func(percentage);
       }, false);
-    }
+    },
     'success': function (func) {
       xhr.addEventListener('load', function (e) {
         func(xhr.responseText, xhr);

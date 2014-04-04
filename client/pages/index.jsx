@@ -34,7 +34,7 @@ var IndexPage = module.exports = React.createClass({
   },
   newProject: function (name, file) {
     var setState = this.setState.bind(this)
-    this.props.dao.newProject(name, filei.files[0])
+    this.props.dao.newProject(name, file)
       .on('progress', function (perc) {
         setState({uploadProgress: perc})
       })
@@ -84,7 +84,8 @@ var IndexPage = module.exports = React.createClass({
       projects: this.state.projects,
       goToProject: this.goToProject,
       uploadProgress: this.state.uploadProgress,
-      uploadError: this.state.uploadError
+      uploadError: this.state.uploadError,
+      newProject: this.newProject
     });
   },
 

@@ -9,6 +9,24 @@ function TestDao(delay) {
 
 TestDao.prototype = {
   newProject: function (name, file) {
+    setTimeout(function () {
+      handlers.success.forEach(function (fn) {
+        fn('{"id": 25}', null);
+      });
+    }, this.delay);
+    var handlers = {
+      abort: [],
+      progress: [],
+      error: [],
+      success: []
+    }
+    var chain = {
+      on: function (evt, func) {
+        handlers[evt].push(func)
+        return chain;
+      }
+    }
+    return chain;
   },
   listProjects: function (cb) {
     setTimeout(function () {

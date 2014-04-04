@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
-var ProjectsList = React.createClass({
+var ProjectsList = module.exports = React.createClass({
+  displayName: 'ProjectsList',
   getDefaultProps: function () {
     return {
       projects: [],
@@ -40,7 +41,7 @@ var ProjectsList = React.createClass({
         <ul className="projects__list">{
           this.props.projects.map(function (project) {
             return (
-              <li className="projects__project" onClick={this.props.goToProject.bind(null, project.id)}>
+              <li className="projects__project" key={project.id} onClick={this.props.goToProject.bind(null, project.id)}>
                 {project.name}
               </li>
             )
@@ -49,7 +50,7 @@ var ProjectsList = React.createClass({
         <form action={this.action}>
           {this.error()}
           <input type="text" placeholder="Project Name" ref="name" required/>
-          <input type="file" accept="multipart/x-zip" ref="file" required/>
+          <input type="file" accept="*.zip" ref="file" required/>
           <button type="submit" onClick={this.action}>Create Project</button>
         </form>
       </div>

@@ -19,5 +19,8 @@
   "license": "None yet",
   "bugs": {
     "url": "https://github.com/jaredly/guided-ml/issues"
+  },
+  "devDependencies": {
+    "reactify": "~0.10.0"
   }
 }
