@@ -1,7 +1,18 @@
 #!/usr/bin/env python
 
 from zipfile import ZipFile
+from pandas import DataFrame, read_table
 import utils
+
+def depandas(instances):
+    ready = []
+    for inst in instances:
+        read = inst.copy()
+        dframe = read['data']
+        print dframe
+        read['data'] = [list(dframe.iloc[i]) for i in range(len(dframe))]
+        ready.append(read)
+    return ready
 
 class DAO:
     def __init__(self, pl):
@@ -15,14 +26,23 @@ class DAO:
         self.add_data(newid, zipfile)
         return newid
 
+    def get_project(self, id):
+        return {
+            'features': self.pl.get_features(id),
+            'raw_data': depandas(self.pl.get_raw_data(id)),
+            'learners': self.pl.get_learners(id),
+            'name': self.pl.get_name(id),
+            'headers': self.pl.get_headers(id)
+        }
+
     def update_name(self, id, name):
         return self.pl.update_name(id, name)
 
     def update_data(self, id, data):
         self.pl.drop_data(id)
-        raw_data = self.add_data(id, data)
+        raw_data, header = self.add_data(id, data)
         features = self.pl.get_features()
-        return utils.make_training_data(raw_data, features)
+        return utils.make_training_data(raw_data, header, features)
 
     def parse_zip(self, rawzip):
         zipfile = ZipFile(rawzip, 'r')
@@ -43,23 +63,23 @@ class DAO:
                 vdata = zipfile.open(vid).read()
             if meta in all_files:
                 mdata = utils.parse_meta(zipfile.open(meta).read())
-            text = zipfile.open(name).read()
-            header, data = utils.parse_csv(text)
+            dframe = read_table(zipfile.open(name), sep=',')
             iclass = name.split('-')[0]
-            yield inum, name, iclass, header, data, mdata, idata, vdata
+            yield inum, name, iclass, dframe, mdata, idata, vdata
 
     def add_data(self, id, rawzip):
         instances = []
         global_header = None
         classes = set()
         metas = {}
-        for inum, filename, iclass, header, data, mdata, idata, vdata in self.parse_zip(rawzip):
+        for inum, filename, iclass, dframe, mdata, idata, vdata in self.parse_zip(rawzip):
             metas[inum] = {
                 'img': idata,
                 'vid': vdata
             }
 
             classes.add(iclass)
+            header = list(dframe.columns)
             if global_header is None:
                 global_header = header
             if header != global_header:
@@ -67,7 +87,7 @@ class DAO:
                         the same column headers. {}: {}'.format(inum, filename))
             instances.append({
                 "id": inum,
-                "data": data,
+                "data": dframe,
                 "filename": filename,
                 "class": iclass,
                 "meta": mdata,
@@ -75,13 +95,13 @@ class DAO:
                 "has_vid": vdata is not None
             })
             # yield inum, text, idata is not None, vdata is not None
-        self.pl.write_instances(id, instances, metas)
-        return instances
+        self.pl.write_instances(id, instances, metas, global_header)
+        return instances, global_header
 
     # features
 
     def add_feature(self, id, name, type, args):
-        raw_data = self.pl.get_raw_data()
+        raw_data = self.pl.get_raw_data(id)
         feature = {'name': name, 'type': type, 'args': args}
         fid = self.pl.add_feature(id, feature)
         return fid, utils.make_training_column(raw_data, feature), feature
