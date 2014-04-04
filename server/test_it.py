@@ -68,15 +68,19 @@ class TestProjectStuff:
             'meta': {'awesome': 'true', 'person': 'jared'}
         }
 
-        '''
     def test_add_feature(self, p_app):
         rv = p_app.post('/project/0/feature/new', data=json.dumps(dict(
             name='Awesome',
             type='average',
-            args={'dimension': 'x'}
+            args={'dimension': 'b'}
         )), content_type='application/json')
         assert rv.status_code == 200
-        '''
+        data = json.loads(rv.data)
+        assert data['feature_column'] == [5/3.0]
+
+        rv = p_app.delete('/project/0/feature/0')
+        assert rv.status_code == 204
+
 
 
 

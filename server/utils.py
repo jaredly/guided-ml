@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import features
+from features import make_feature
 import csv
 
 '''
@@ -20,8 +20,8 @@ def parse_csv(text):
             it.append(item)
         data.append(it)
     return header, data
- '''
- 
+'''
+
 def parse_meta(text):
     return dict(line.strip().split('=') for line in text.split('\n'))
 
@@ -35,12 +35,8 @@ def validate_learner(learner, data):
     returns a confusion matrix with the ids of the original data'''
     return None
 
-def feature_function(feature):
-
-    raise Exception('not implemented')
-
 def make_training_data(instances, header, features):
-    ffunctions = map(feature_function, features)
+    ffunctions = map(make_feature, features)
     training_data = []
     for inst in instances:
         training = [inst['id'], inst['class']]
@@ -50,7 +46,7 @@ def make_training_data(instances, header, features):
     return training_data
 
 def make_training_column(instances, feature):
-    ffunction = feature_function(feature)
+    ffunction = make_feature(feature)
     return [ffunction(inst['data']) for inst in instances]
 
 

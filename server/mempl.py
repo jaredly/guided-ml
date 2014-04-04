@@ -40,7 +40,6 @@ class MemPL(PL):
         del self.files[id]
 
     def get_features(self, id):
-        # features = sorted(self.features[id].items())
         return self.features[id].copy()
     
     def get_learners(self, id):
