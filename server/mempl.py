@@ -14,6 +14,7 @@ class MemPL(PL):
         self.instances = {}
         self.metas = {}
         self.headers = {}
+        self.classes = {}
 
     def list_projects(self):
         return list({'id': id, 'name': name} for (id, name) in self.names.items())
@@ -34,6 +35,7 @@ class MemPL(PL):
         self.files[id] = {}
         self.nextfid[id] = 0
         self.nextlid[id] = 0
+        self.classes[id] = []
         return id
 
     def drop_data(self, id):
@@ -45,10 +47,11 @@ class MemPL(PL):
     def get_learners(self, id):
         return self.learners[id].copy()
 
-    def write_instances(self, id, instances, metas, headers):
+    def write_instances(self, id, instances, metas, headers, classes):
         self.instances[id] = instances
         self.metas[id] = metas
         self.headers[id] = headers
+        self.classes[id] = classes
 
     def get_headers(self, id):
         return self.headers[id]

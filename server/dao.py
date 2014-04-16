@@ -94,7 +94,7 @@ class DAO:
                 "has_vid": vdata is not None
             })
             # yield inum, text, idata is not None, vdata is not None
-        self.pl.write_instances(id, instances, metas, global_header)
+        self.pl.write_instances(id, instances, metas, global_header, classes)
         return instances, global_header
 
     # features
