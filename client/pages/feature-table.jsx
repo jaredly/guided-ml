@@ -3,7 +3,16 @@ var FeatureTable = module.exports = React.createClass({
   displayName: 'FeatureTable',
   getInitialState: function () {
     return {
-      sorting: 0
+      sorting: 1
+    }
+  },
+  getDefaultProps: function () {
+    return {
+      data: null,
+      selected: null,
+      editFeature: function () {throw 'fail'},
+      classes: [],
+      features: []
     }
   },
   sortBy: function (i, e) {
@@ -11,31 +20,43 @@ var FeatureTable = module.exports = React.createClass({
     e.preventDefault()
     this.setState({sorting: i})
   },
-  featureHeader: function (feature, i) {
+  sorter: function (i) {
     var cls = ''
-      , that = this
-      , by = i + 2
-      , sorting = i + 2 === this.state.sorting
+      , sorting = i+1 === this.state.sorting
+      , by = i+1
+      , down = true
     if (sorting) {
-      cls = ' sorting-down'
+      cls = ' sorting sorting-down'
       by = -by
-    } else if (i + 2 === -this.state.sorting) {
-      cls = ' sorting-up'
+    } else if (i+1 === -this.state.sorting) {
+      cls = ' sorting sorting-up'
+      down = false
+    }
+    return (
+      <span className={"sorter" + cls}
+          onClick={this.sortBy.bind(null, by)}>
+          {down ? 'v' : '^'}
+      </span>
+    )
+  },
+  featureHeader: function (feature, i) {
+    var hcls = ''
+    if (feature.id === this.props.selected) {
+      hcls += ' selected'
     }
     return (
       <td key={feature.id}
-          onClick={that.props.editFeature.bind(null, feature.id)}>
+          className={'feature-head' + hcls}
+          onClick={this.props.editFeature.bind(null, feature.id)}>
         {feature.name}
-        <span className={"sorter" + cls}
-          onClick={that.sortBy.bind(null, by)}>
-          {sorting ? '^' : 'v'}
-        </span>
+        {this.sorter(i + 2)}
       </td>
     )
   },
   render: function () {
     var data = this.props.data
       , features = this.props.features
+      , classes = this.props.classes
       , sorting = this.state.sorting
       , that = this
     var indecies = []
@@ -45,22 +66,25 @@ var FeatureTable = module.exports = React.createClass({
     if (sorting !== 0) {
       if (sorting > 0) {
         indecies.sort(function (a, b) {
-          return data[a][sorting] - data[b][sorting]
+          var x = data[a][sorting-1]
+            , y = data[b][sorting-1]
+          return x == y ? 0 : (x > y ? 1 : -1)
         })
       } else {
         indecies.sort(function (a, b) {
-          return data[b][-sorting] - data[a][-sorting]
+          var x = data[a][-sorting-1]
+            , y = data[b][-sorting-1]
+          return x == y ? 0 : (x > y ? -1 : 1)
         })
       }
     }
     return (
       <div className='feature-table'>
-        Feature Table!
         <table>
           <thead>
             <tr>
-              <td>Id</td>
-              <td>Class</td>
+              <td className='feature-table__id-head'>Id {this.sorter(0)}</td>
+              <td className='feature-table__class-head'>Class {this.sorter(1)}</td>
               {
                 features.map(this.featureHeader)
               }
@@ -68,9 +92,11 @@ var FeatureTable = module.exports = React.createClass({
           </thead>
           <tbody>
             {
-              indecies.map(function (i) {
+              indecies.map(function (i, x) {
+                var cls = x%2 ? 'row-odd' : 'row-even'
+                cls += ' class-' + classes.indexOf(data[i][1])
                 return (
-                  <tr key={i} >
+                  <tr key={i} className={cls}>
                     {
                       data[i].map(function (item, i) {
                         return (

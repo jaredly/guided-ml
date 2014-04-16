@@ -14,10 +14,16 @@ function TestDao(delay) {
       features: {
         1: {
           name: 'Thign',
+          type: 'sum_angles',
+          args: {
+            dim1: 'x',
+            dim2: 'y'
+          },
           id: 1
         }
       },
       learners: {},
+      headers: ['x', 'y', 'z'],
       classes: ['one', 'two']
     },
     5: {
@@ -25,10 +31,25 @@ function TestDao(delay) {
       features: {
         1: {
           name: 'Awesome',
+          type: 'sum_angles',
+          args: {
+            dim1: 'x',
+            dim2: 'y'
+          },
           id: 1
+        },
+        2: {
+          name: 'Something',
+          type: 'sum_angles',
+          args: {
+            dim1: 'x',
+            dim2: 'y'
+          },
+          id: 2
         }
       },
       learners: {},
+      headers: ['x', 'y', 'z', 'color'],
       classes: ['great', 'bad']
     }
   }
@@ -39,10 +60,25 @@ function TestDao(delay) {
   }
 }
 
+function choice(items) {
+  return items[parseInt(Math.random() * items.length, 10)]
+}
+
+function merge(a, b) {
+  for (var c in b) {
+    a[c] = b[c]
+  }
+  return a
+}
+
 TestDao.prototype = {
   getFeatureOutput: function (pid) {
     var that = this
     return new Promise(function (resolve, reject) {
+      if (resolve.resolve) {
+        reject = resolve.reject.bind(resolve)
+        resolve = resolve.resolve.bind(resolve)
+      }
       setTimeout(function () {
         if (!that.projects[pid]) {
           return reject('Project not found')
@@ -56,11 +92,26 @@ TestDao.prototype = {
         var data = {
           features: features,
           data: that.trainingData(pid),
+          headers: that.projects[pid].headers,
           classes: that.projects[pid].classes
         }
         resolve(data)
       }, that.delay)
     })
+  },
+  changeFeature: function (pid, fid, data) {
+    return new Promise(function (res, rej)  {
+      if (res.resolve) {
+        rej = res.reject.bind(res)
+        res = res.resolve.bind(res)
+      }
+      var col = []
+      merge(this.projects[pid].features[fid], data)
+      for (var i=0; i<10; i++) {
+        col.push(Math.random() * 20)
+      }
+      res(col)
+    }.bind(this))
   },
   /**
    * Make training data. [[id, class, feature1val, ...], ...]
@@ -69,7 +120,7 @@ TestDao.prototype = {
     var data = []
       , nf = Object.keys(this.projects[id].features).length
     for (var i=0; i<10; i++) {
-      var row = [i, 'good']
+      var row = [i, choice(this.projects[id].classes)]
       for (var j=0;j<nf;j++) {
         row.push(Math.random() * 20)
       }
@@ -87,6 +138,7 @@ TestDao.prototype = {
     this.projects[id] = {
       learners: {},
       features: {},
+      headers: [],
       classes: []
     }
     setTimeout(function () {
@@ -120,6 +172,10 @@ TestDao.prototype = {
   getProjectName: function (pid) {
     var that = this
     return new Promise(function (resolve, reject) {
+      if (resolve.resolve) {
+        reject = resolve.reject.bind(resolve)
+        resolve = resolve.resolve.bind(resolve)
+      }
       setTimeout(function () {
         if (!that.projects[pid]) return reject('Project not found')
         resolve(that.projects[pid].name)

@@ -3,6 +3,19 @@ var ModelMix = require('./modelmix')
   , FeatureTable = require('./feature-table.jsx')
   , FeatureEditor = require('./feature-editor.jsx')
 
+function merge(a, b) {
+  for (var c in b) {
+    a[c] = b[c]
+  }
+  return a
+}
+
+function changeCol(data, ix, col) {
+  for (var i=0; i<col.length; i++) {
+    data[i][ix] = col[i]
+  }
+}
+
 var FeaturesPage = module.exports = React.createClass({
   displayName: 'FeaturesPage',
   mixins: [ModelMix],
@@ -19,6 +32,20 @@ var FeaturesPage = module.exports = React.createClass({
       editing: fid
     })
   },
+  changeFeature: function (fid, fix, data) {
+    var that = this
+    this.props.dao.changeFeature(this.props.pid, fid, data).then(function (result) {
+      var model = that.state.model
+      merge(model.features[fix], data)
+      changeCol(model.data, fix + 2, result)
+      that.setState({
+        model: model
+      })
+    }, function (err) {
+      console.error('fail!', err)
+      // that.setState({modelError:
+    })
+  },
   showEditFeature: function () {
     if (null === this.state.editing) return
     var fid = this.state.editing
@@ -33,9 +60,11 @@ var FeaturesPage = module.exports = React.createClass({
     if (feature === null) return
     return (
       <div className='selected-feature'>
-        Editing a feature!!
         {FeatureEditor({
           id: fid,
+          onChange: this.changeFeature.bind(null, fid, i),
+          onClose: this.editFeature.bind(null, null),
+          model: this.state.model,
           value: feature
         })}
       </div>
@@ -48,15 +77,13 @@ var FeaturesPage = module.exports = React.createClass({
     return (
       <div className='features'>
         {this.showEditFeature()}
-        <div className='features__table'>
-          {FeatureTable({
+        {FeatureTable({
             editFeature: this.editFeature,
             selected: this.state.editing,
             data: this.state.model.data,
             classes: this.state.model.classes,
             features: this.state.model.features
           })}
-        </div>
       </div>
     )
   }
