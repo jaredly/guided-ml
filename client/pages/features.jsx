@@ -2,6 +2,7 @@
 var ModelMix = require('./modelmix')
   , FeatureTable = require('./feature-table.jsx')
   , FeatureEditor = require('./feature-editor.jsx')
+  , features = require('../features')
 
 function merge(a, b) {
   for (var c in b) {
@@ -16,6 +17,19 @@ function changeCol(data, ix, col) {
   }
 }
 
+function addCol(data, col) {
+  for (var i=0; i<col.length; i++) {
+    data[i].push(col[i])
+  }
+}
+
+function removeCol(data, ix) {
+  for (var i=0; i<data.length; i++) {
+    data[i].splice(ix, 1)
+  }
+}
+
+
 var FeaturesPage = module.exports = React.createClass({
   displayName: 'FeaturesPage',
   mixins: [ModelMix],
@@ -27,9 +41,32 @@ var FeaturesPage = module.exports = React.createClass({
   model: function () {
     return this.props.dao.getFeatureOutput(this.props.pid)
   },
-  editFeature: function (fid) {
+  toggleEditing: function (fid) {
+    if (this.state.editing === fid) {
+      fid = null
+    }
     this.setState({
       editing: fid
+    })
+  },
+  removeFeature: function (fid, ix) {
+    var that = this
+    this.props.dao.removeFeature(this.props.pid, fid).then(function () {
+      var model = that.state.model
+      model.features.splice(ix, 1)
+      removeCol(model.data, ix + 2)
+      that.setState({model: model})
+    })
+  },
+  addFeature: function (ftype) {
+    var that = this
+      , name = ftype + ' new ' + ('' + Math.random()).slice(0, 5)
+      , args = features.defaultArgs(ftype, this.state.model.headers)
+    this.props.dao.addFeature(this.props.pid, ftype, name, args).then(function (result) {
+      var model = that.state.model
+      model.features.push(result.feature)
+      addCol(model.data, result.feature_column)
+      that.setState({model: model, editing: result.feature.id})
     })
   },
   changeFeature: function (fid, fix, data) {
@@ -63,7 +100,8 @@ var FeaturesPage = module.exports = React.createClass({
         {FeatureEditor({
           id: fid,
           onChange: this.changeFeature.bind(null, fid, i),
-          onClose: this.editFeature.bind(null, null),
+          onClose: this.toggleEditing.bind(null, null),
+          onRemove: this.removeFeature.bind(null, fid, i),
           model: this.state.model,
           value: feature
         })}
@@ -78,7 +116,8 @@ var FeaturesPage = module.exports = React.createClass({
       <div className='features'>
         {this.showEditFeature()}
         {FeatureTable({
-            editFeature: this.editFeature,
+            toggleEditing: this.toggleEditing,
+            addFeature: this.addFeature,
             selected: this.state.editing,
             data: this.state.model.data,
             classes: this.state.model.classes,

@@ -51,7 +51,17 @@ def make_training_data(instances, header, features):
 
 def make_training_column(instances, feature):
     ffunction = make_feature(feature)
-    return [ffunction(inst['data']) for inst in instances]
+    return [applyOrZero(ffunction, inst['data'], inst['id']) for inst in instances]
+
+def applyOrZero(fn, arg, id):
+    try:
+        val = fn(arg)
+        print 'Value', id, val
+        return val
+    except Exception as e:
+        print 'Failed!! while evaluating a feature'
+        print e
+        return 0
 
 def list_learners():
     return []

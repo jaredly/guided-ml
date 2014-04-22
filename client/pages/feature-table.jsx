@@ -1,4 +1,6 @@
 
+var FEATURES = require('../features').FEATURES
+
 var FeatureTable = module.exports = React.createClass({
   displayName: 'FeatureTable',
   getInitialState: function () {
@@ -10,7 +12,8 @@ var FeatureTable = module.exports = React.createClass({
     return {
       data: null,
       selected: null,
-      editFeature: function () {throw 'fail'},
+      toggleEditing: function () {throw 'fail'},
+      addFeature: function (){throw 'override'},
       classes: [],
       features: []
     }
@@ -47,11 +50,15 @@ var FeatureTable = module.exports = React.createClass({
     return (
       <td key={feature.id}
           className={'feature-head' + hcls}
-          onClick={this.props.editFeature.bind(null, feature.id)}>
+          onClick={this.props.toggleEditing.bind(null, feature.id)}>
         {feature.name}
         {this.sorter(i + 2)}
       </td>
     )
+  },
+  newFeature: function (e) {
+    var val = e.target.value
+    if (val !== 'New Feature') return this.props.addFeature(val)
   },
   render: function () {
     var data = this.props.data
@@ -80,6 +87,16 @@ var FeatureTable = module.exports = React.createClass({
     }
     return (
       <div className='feature-table'>
+        <div className='feature-table__new'>
+          <select value="Add Feature" onChange={this.newFeature}>
+            <option value="Add Feature">Add Feature</option>
+            {
+              Object.keys(FEATURES).map(function (name) {
+                return <option value={name}>{name}</option>
+              })
+            }
+          </select>
+        </div>
         <table>
           <thead>
             <tr>
@@ -100,8 +117,8 @@ var FeatureTable = module.exports = React.createClass({
                     {
                       data[i].map(function (item, i) {
                         return (
-                          <td key={i}>
-                            {item}
+                          <td key={i} title={item + ''}>
+                            {toval(item)}
                           </td>
                         )
                       })
@@ -116,4 +133,12 @@ var FeatureTable = module.exports = React.createClass({
     )
   },
 })
+
+function toval(item) {
+  var val = item + '';
+  if (val.length > 11) {
+    return val.slice(0, 8) + '...'
+  }
+  return val
+}
 

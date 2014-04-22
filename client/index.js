@@ -1,8 +1,8 @@
 
 var App = require('./app.jsx')
-  , Dao = require('./test-dao')
+  , Dao = require('./rest-dao')
 
 React.renderComponent(App({
-  dao: new Dao(100),
+  dao: new Dao(),
 }), document.body);
 

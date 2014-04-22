@@ -53,6 +53,9 @@ class MemPL(PL):
         self.headers[id] = headers
         self.classes[id] = classes
 
+    def get_classes(self, id):
+        return self.classes[id]
+
     def get_headers(self, id):
         return self.headers[id]
 
@@ -77,6 +80,9 @@ class MemPL(PL):
         self.features[id][fid] = feature
         return fid
 
+    def get_feature(self, id, fid):
+        return self.features[id][fid]
+
     def add_learner(self, id, learner):
         lid = self.nextlid[id]
         self.nextlid[id] += 1
@@ -98,6 +104,12 @@ class MemPL(PL):
     def update_feature_args(self, id, fid, args):
         self.features[id][fid]['args'] = args
 
+    def update_feature(self, id, fid, data):
+        print 'prev feature', self.features[id][fid]
+        for key in data:
+            self.features[id][fid][key] = data[key]
+        print 'updated feature', self.features[id][fid]
+        return self.features[id][fid]
 
 
 

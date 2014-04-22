@@ -1,3 +1,7 @@
 *.pyc
 *.swp
 *.zip
+client/bundle.js
+client/features-raw.json
+server/dump.pck
+client/index.css

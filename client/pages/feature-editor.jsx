@@ -1,25 +1,6 @@
 
 var _ = require('lodash')
-
-var FEATURES = {
-  custom: {
-    title: 'Custom',
-    args: {
-      code: {
-        type: 'str-multi',
-        description: 'Put your python code here.',
-        default: '# type your python code here.\n'
-      }
-    }
-  },
-  sum_angles: {
-    title: 'Sum of Angles',
-    args: {
-      dim1: 'dim',
-      dim2: 'dim'
-    }
-  }
-}
+  , FEATURES = require('../features').FEATURES
 
 var FeatureEditor = module.exports = React.createClass({
   displayName: 'FeatureEditor',
@@ -29,7 +10,8 @@ var FeatureEditor = module.exports = React.createClass({
       value: {},
       model: {},
       onChange: {},
-      onClose: {}
+      onClose: {},
+      onRemove: function () {throw 'override'}
     }
   },
   getInitialState: function () {
@@ -60,7 +42,7 @@ var FeatureEditor = module.exports = React.createClass({
     var change = this.changeArg.bind(null, name)
     var input
     if (arg.type === 'str-multi') {
-      input = d.textarea({
+      input = React.DOM.textarea({
         onChange: change,
         value: value,
       })
@@ -98,6 +80,7 @@ var FeatureEditor = module.exports = React.createClass({
         </div>
         <button onClick={this.onApply} className='feature-editor__apply'>Apply</button>
         <button onClick={this.props.onClose} className='feature-editor__close'>Close</button>
+        <button onClick={this.props.onRemove} className='feature-editor__remove'>Remove</button>
       </div>
     )
   }

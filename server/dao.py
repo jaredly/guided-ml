@@ -34,13 +34,32 @@ class DAO:
             'headers': self.pl.get_headers(id)
         }
 
+    def get_feature_output(self, id):
+        return {
+            'features': self.feature_list(id),
+            'data': self.make_data(id),
+            'headers': self.pl.get_headers(id),
+            'classes': list(self.pl.get_classes(id))
+        }
+    
+    def feature_list(self, id):
+        items = []
+        for fid, value in self.pl.get_features(id).items():
+            value['id'] = fid
+            items.append(value)
+        items.sort(lambda a,b: a['id'] - b['id'])
+        return items
+
     def update_name(self, id, name):
         return self.pl.update_name(id, name)
+
+    def get_name(self, id):
+        return self.pl.get_name(id)
 
     def update_data(self, id, data):
         self.pl.drop_data(id)
         raw_data, header = self.add_data(id, data)
-        features = self.pl.get_features()
+        features = self.feature_list(id)
         return utils.make_training_data(raw_data, header, features)
 
     def parse_zip(self, rawzip):
@@ -103,6 +122,7 @@ class DAO:
         raw_data = self.pl.get_raw_data(id)
         feature = {'name': name, 'type': type, 'args': args}
         fid = self.pl.add_feature(id, feature)
+        feature['id'] = fid
         return fid, utils.make_training_column(raw_data, feature), feature
 
     def remove_feature(self, id, fid):
@@ -113,6 +133,11 @@ class DAO:
 
     def update_feature_args(self, id, fid, args):
         self.pl.update_feature_args(id, fid, args)
+
+    def update_feature(self, id, fid, data):
+        feature = self.pl.update_feature(id, fid, data)
+        raw_data = self.pl.get_raw_data(id)
+        return utils.make_training_column(raw_data, feature)
 
     # learners
 
@@ -141,7 +166,7 @@ class DAO:
         return self.pl.add_learner(id, learner)
 
     def trained_learner(self, id, lid):
-        features = self.pl.get_features(id)
+        features = self.feature_list(id)
         learner  = self.pl.get_learner(id, lid)
         raw_data = self.pl.get_raw_data(id)
         data     = utils.make_training_data(raw_data, features)
@@ -150,9 +175,10 @@ class DAO:
         return features, trained, learner
 
     def make_data(self, id):
-        features = self.pl.get_features(id)
+        features = self.feature_list(id)
+        header = self.pl.get_headers(id)
         raw_data = self.pl.get_raw_data(id)
-        data     = utils.make_training_data(raw_data, features)
+        data     = utils.make_training_data(raw_data, header, features)
         return data
 
     def train(self, id, lid):

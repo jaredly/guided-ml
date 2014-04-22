@@ -36,7 +36,7 @@ def test_add_project(app):
         file=(make_example_zipfile(), 'notazip.zip'),
         name='The best'
     ))
-    assert rv.status_code == 302
+    assert rv.status_code == 200
 
 @pytest.fixture
 def p_app(app):
@@ -45,6 +45,22 @@ def p_app(app):
         name='The best'
     ))
     return app
+
+class TestGetFeatures:
+    def test_get_feature_output(self, p_app):
+        rv = p_app.get('/project/0/feature/all')
+        assert rv.status_code == 200
+        data = json.loads(rv.data.decode('utf8'))
+        assert data['features'] == []
+        assert data['data'] == [[0, 'one']]
+        assert data['headers'] == ['a', 'b', 'c']
+        assert data['classes'] == ['one']
+
+    def test_get_name(self, p_app):
+        rv = p_app.get('/project/0/name')
+        assert rv.status_code == 200
+        data = json.loads(rv.data.decode('utf8'))
+        assert data['name'] == 'The best'
 
 class TestProjectStuff:
     def test_get_project(self, p_app):

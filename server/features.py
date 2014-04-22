@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 
 import numpy as np
+import math
 
 features = {}
 
-def feature(args, name=None):
+def feature(args, title=None, name=None):
     def meta(func):
         _name = name
+        _title = title
         if _name is None:
             _name = func.__name__
+        if _title is None:
+            _title = _name
         features[_name] = {
             'args': args,
+            'title': _title,
             'doc': func.__doc__,
             'func': func
         }
@@ -21,7 +26,7 @@ def angle_between(data, dim1, dim2):
     dat1 = data[dim1]
     pa1 = dat1[:-2]
     pa2 = dat1[1:-1]
-    pa3 = dat3[2:]
+    pa3 = dat1[2:]
 
     dat2 = data[dim2]
     pb1 = dat2[:-2]
@@ -45,10 +50,11 @@ def ssangles(data, dim1, dim2):
 @feature({'dimension': 'dim'})
 def average(data, dimension):
     '''Computes the average of a dimention'''
+    if not len(data[dimension]): return 0
     return data[dimension].mean()
 
 @feature({'code': {
-    'type': 'str',
+    'type': 'str-multi',
     'description': 'Put your python code here, and set the resulting value to `output`.\
                     `data` is a pandas.DataFrame containing the raw data for a single instance.',
     'default': '# use data\noutput = len(data)'
@@ -62,6 +68,7 @@ def custom(data, code):
 def make_feature(feature):
     if feature['type'] not in features:
         return None
+    print 'making feature', feature['type'], feature['args']
     def meta(data):
         return features[feature['type']]['func'](data, **feature['args'])
     return meta

@@ -11,23 +11,21 @@ body {
   background-color: #fee;
 }
 
-.feature-table {
-  thead {
-    td {
-      font-weight: bold;
-
-      &.feature-head {
-        cursor: pointer;
-      }
-
-      .sorter {
-        padding: 5px 10px;
-        cursor: pointer;
-      }
-    }
-  }
+.class-2 {
+  background-color: #efe;
 }
 
+.class-3 {
+  background-color: #ffe;
+}
+
+.class-4 {
+  background-color: #eff;
+}
+
+.class-5 {
+  background-color: #fef;
+}
 
 
 .index {
@@ -153,8 +151,28 @@ body {
   }
 }
 
+.feature-table {
+  overflow-x: auto;
+  thead {
+    td {
+      font-weight: bold;
+      min-width: 30px;
+
+      &.feature-head {
+        cursor: pointer;
+      }
+
+      .sorter {
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+
 .feature-table table {
-  width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
 
   tr.row-even,

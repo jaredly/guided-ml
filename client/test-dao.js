@@ -105,12 +105,46 @@ TestDao.prototype = {
         rej = res.reject.bind(res)
         res = res.resolve.bind(res)
       }
-      var col = []
       merge(this.projects[pid].features[fid], data)
-      for (var i=0; i<10; i++) {
-        col.push(Math.random() * 20)
+      res(this.featureColumn())
+    }.bind(this))
+  },
+  featureColumn: function (ln) {
+    ln = ln || 10
+    var col = []
+    for (var i=0; i<10; i++) {
+      col.push(Math.random() * 20)
+    }
+    return col
+  },
+  removeFeature: function (pid, fid) {
+    return new Promise(function (res, rej) {
+      if (res.resolve) {
+        rej = res.reject.bind(res)
+        res = res.resolve.bind(res)
       }
-      res(col)
+      delete this.projects[pid].features[id]
+      res()
+    })
+  },
+  addFeature: function (pid, ftype, fname, args) {
+    return new Promise(function (res, rej) {
+      if (res.resolve) {
+        rej = res.reject.bind(res)
+        res = res.resolve.bind(res)
+      }
+      var id = this.newId('feature')
+      this.projects[pid].features[id] = {
+        type: ftype,
+        name: fname,
+        id: id,
+        args: args
+      }
+      res({
+         fid: id,
+         feature: this.projects[pid].features[id],
+         feature_column: this.featureColumn()
+      })
     }.bind(this))
   },
   /**
