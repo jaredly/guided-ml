@@ -21,7 +21,7 @@ import pytest
 
 @pytest.fixture
 def app():
-    app = make_app()
+    app = make_app(False)
     app.config['TESTING'] = True
     return app.test_client()
 
