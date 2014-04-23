@@ -34,6 +34,17 @@ class DAO:
             'headers': self.pl.get_headers(id)
         }
 
+    def get_learner_output(self, id):
+        acc, confusion, classes, assignments = self.train_all(id)
+        return {
+            'learners': self.learner_list(id),
+            'headers': self.pl.get_headers(id),
+            'classes': list(self.pl.get_classes(id)),
+            'assignments': assignments,
+            'confusion': confusion,
+            'accuracy': acc
+        }
+
     def raw_dict(self, id):
         items = self.pl.get_raw_data(id)
         return dict((i['id'], i) for i in items)
@@ -46,7 +57,15 @@ class DAO:
             'headers': self.pl.get_headers(id),
             'classes': list(self.pl.get_classes(id))
         }
-    
+
+    def learner_list(self, id):
+        items = []
+        for fid, value in self.pl.get_learners(id).items():
+            value['id'] = fid
+            items.append(value)
+        items.sort(lambda a,b: a['id'] - b['id'])
+        return items
+
     def feature_list(self, id):
         items = []
         for fid, value in self.pl.get_features(id).items():
@@ -168,7 +187,10 @@ class DAO:
             'type': type,
             'args': args
         }
-        return self.pl.add_learner(id, learner)
+        lid = self.pl.add_learner(id, learner)
+        learner['id'] = lid
+        acc, confusion, classes, assignments = self.train(id, lid)
+        return lid, acc, confusion, classes, assignments, learner
 
     def trained_learner(self, id, lid):
         features = self.feature_list(id)
@@ -186,20 +208,22 @@ class DAO:
         data     = utils.make_training_data(raw_data, header, features)
         return data
 
+    def make_pandas(self, id):
+        data = self.make_data(id)
+        features = self.feature_list(id)
+        columns = ['id', 'vclass'] + [f['name'] + ':' + str(f['id']) for f in features]
+        return DataFrame(data, columns=columns)
+
     def train(self, id, lid):
         learner  = self.pl.get_learner(id, lid)
-        data = self.make_data(id)
+        data = self.make_pandas(id)
 
         return utils.validate_learner(learner, data)
 
     def train_all(self, id):
-        learners = self.pl.get_learners(id)
-        data = self.make_data(id)
-        confused = {}
-
-        for k, learner in learners.items():
-            confused[k] = utils.validate_learner(learner, data)
-
-        return confused
+        learners = self.learner_list(id)
+        data = self.make_pandas(id)
+        acc, confusion, classes, assignments = utils.validate_learners(learners, data)
+        return acc, confusion, classes, assignments
 
 # vim: et sw=4 sts=4

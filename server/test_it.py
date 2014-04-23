@@ -46,6 +46,15 @@ def p_app(app):
     ))
     return app
 
+@pytest.fixture
+def featured_app(p_app):
+    rv = p_app.post('/project/0/feature/new', data=json.dumps(dict(
+        name='Awesome',
+        type='average',
+        args={'dimension': 'b'}
+    )), content_type='application/json')
+    return p_app
+
 class TestGetFeatures:
     def test_get_feature_output(self, p_app):
         rv = p_app.get('/project/0/feature/all')
@@ -83,6 +92,21 @@ class TestProjectStuff:
             'id': 0,
             'meta': {'awesome': 'true', 'person': 'jared'}
         }
+
+    @pytest.mark.now
+    def test_add_learner(self, featured_app):
+        rv = featured_app.post('/project/0/learner/new', data=json.dumps(dict(
+            name='Awesome',
+            type='neural',
+            args={'max_iter': 100, 'n_mid': 10}
+        )), content_type='application/json')
+        assert rv.status_code == 200
+        data = json.loads(rv.data.decode('utf8'))
+        assert data['accuracy'] == [5/3.0]
+
+        rv = featured_app.delete('/project/0/learner/0')
+        assert rv.status_code == 204
+
 
     def test_add_feature(self, p_app):
         rv = p_app.post('/project/0/feature/new', data=json.dumps(dict(

@@ -4,14 +4,19 @@ from Orange.classification.neural import NeuralNetworkLearner
 
 learners = {}
 
-def learner(args, name=None):
+def learner(args, title=None, name=None):
     def meta(func):
         _name = name
+        _title = title
         if _name is None:
             _name = func.__name__
+        if _title is None:
+            _title = _name
         learners[_name] = {
             'args': args,
             'doc': func.__doc__,
+            'title': _title,
+            'name': _name,
             'func': func
         }
         return func
@@ -21,12 +26,12 @@ def learner(args, name=None):
     'n_mid': {
         'description': 'The size of the hidden layer',
         'default': 10,
-        'type': int
+        'type': 'int'
     },
     'max_iter': {
         'description': 'The max number of iterations',
         'default': 1000,
-        'type': int
+        'type': 'int'
     }
 })
 def neural(n_mid, max_iter):
@@ -35,7 +40,7 @@ def neural(n_mid, max_iter):
 def make_learner(learner):
     if learner['type'] not in learners:
         return None
-    return learners[learner['type']]['func'](**feature['args'])
+    return learners[learner['type']]['func'](**learner['args'])
 
 
 # vim: et sw=4 sts=4

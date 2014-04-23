@@ -13,11 +13,11 @@ index.css: $(less_sources) index.less
 build: bundle.js
 	@echo -n
 
-js_sources = $(wildcard **/*.js)
+js_sources = $(wildcard **/*.js) index.js learners.js features.js rest-dao.js
 json_sources = $(wildcard **/*.json)
 jsx_sources = $(wildcard **/*.jsx)
 
-bundle.js: index.js $(js_sources) $(jsx_sources) $(json_sources) features-raw.json
+bundle.js: index.js $(js_sources) $(jsx_sources) $(json_sources) features-raw.json learners-raw.json
 	browserify --debug -t reactify index.js > bundle.js && echo "Done"
 
 .PHONY: serve less

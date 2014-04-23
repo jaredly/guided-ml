@@ -81,6 +81,9 @@ class MemPL(PL):
     def get_feature(self, id, fid):
         return self.features[id][fid]
 
+    def get_learner(self, id, lid):
+        return self.learners[id][lid]
+
     def add_learner(self, id, learner):
         lid = self.nextlid[id]
         self.nextlid[id] += 1

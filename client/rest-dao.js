@@ -46,6 +46,14 @@ RestDAO.prototype = {
         })
     })
   },
+  addLearner: function (pid, ltype, lname, args) {
+    var data = {
+      name: lname,
+      type: ltype,
+      args: args
+    }
+    return this.post('/project/' + pid + '/learner/new', data)
+  },
   addFeature: function (pid, ftype, fname, args) {
     var data = {
       name: fname,
@@ -59,6 +67,9 @@ RestDAO.prototype = {
   },
   getFeatureOutput: function (pid) {
     return this.get('/project/' + pid + '/feature/all')
+  },
+  getLearnerData: function (pid) {
+    return this.get('/project/' + pid + '/learner/all')
   },
   changeFeature: function (pid, fid, data) {
     return this.post('/project/' + pid + '/feature/' + fid, data, 'feature_column')

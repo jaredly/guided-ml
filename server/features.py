@@ -58,14 +58,17 @@ def std_dev(data, dim):
 
 @feature({'dim': 'dim'})
 def max(data, dim):
+    if not len(data): return 0
     return data[dim].max()
 
 @feature({'dim': 'dim'})
 def min(data, dim):
+    if not len(data): return 0
     return data[dim].min()
 
 @feature({'dim1': 'dim', 'dim2': 'dim'})
 def sum_angles(data, dim1, dim2):
+    if not len(data): return 0
     angles = angle_between(data, dim1, dim2)
     return angles.sum()
 

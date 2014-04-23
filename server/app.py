@@ -17,10 +17,10 @@ PICKLE_PATH = join(dirname(__file__), 'dump.pck')
 def cross_origin():
     return flask_cors(headers=['Content-Type', 'Origin', 'X-Requested-With', 'Accept'], origins=['*'], send_wildcard=False)
 
-def make_app():
+def make_app(persist=True):
     req = request
     app = Flask(__name__)
-    if exists(PICKLE_PATH):
+    if persist and exists(PICKLE_PATH):
         try:
             pl = cPickle.load(open(PICKLE_PATH))
         except Exception as e:
@@ -36,8 +36,9 @@ def make_app():
 
     # @app.after_request
     def dump_after():
-        t = Timer(.1, dump_pl)
-        t.start()
+        if persist:
+            t = Timer(.1, dump_pl)
+            t.start()
 
     def get(route):
         return app.route(route, methods=['GET'])
@@ -146,14 +147,19 @@ def make_app():
 
     ## Learners
 
+    @get('/project/<int:id>/learner/all')
+    @cross_origin()
+    def all_learners(id):
+        return jsonify(**dao.get_learner_output(id))
+
     @post('/project/<int:id>/learner/new')
     @cross_origin()
     def new_learner(id):
         name = req.json['name']
         type = req.json['type']
         args = req.json['args']
-        lid = dao.add_learner(id, name, type, args)
-        return jsonify(lid=lid)
+        lid, acc, confusion, classes, assignments, learner = dao.add_learner(id, name, type, args)
+        return jsonify(lid=lid, accuracy=acc, confusion=confusion, learner=learner, classes=classes, assignments=assignments)
 
     @post('/project/<int:id>/learner/<int:lid>')
     @cross_origin()
