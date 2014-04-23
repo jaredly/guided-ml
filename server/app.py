@@ -193,6 +193,8 @@ def make_app():
     @cross_origin()
     def get_img(id, instid):
         data = dao.get_img(id, instid)
+        if not data:
+            return make_response('No image', 404)
         res = make_response(data, 200)
         res.headers['Content-type'] = 'image/png'
         return res
@@ -201,6 +203,8 @@ def make_app():
     @cross_origin()
     def get_vid(id, instid):
         data = dao.get_vid(id, instid)
+        if not data:
+            return make_response('No video', 404)
         res = make_response(data, 200)
         res.headers['Content-type'] = 'video/webm'
         return res

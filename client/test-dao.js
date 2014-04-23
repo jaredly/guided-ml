@@ -91,6 +91,7 @@ TestDao.prototype = {
         })
         var data = {
           features: features,
+          raw_data: that.rawData(pid),
           data: that.trainingData(pid),
           headers: that.projects[pid].headers,
           classes: that.projects[pid].classes
@@ -150,6 +151,11 @@ TestDao.prototype = {
   /**
    * Make training data. [[id, class, feature1val, ...], ...]
    */
+  rawData: function (id) {
+    var data = {}
+    // TODO do something interesting here
+    return data
+  },
   trainingData: function (id) {
     var data = []
       , nf = Object.keys(this.projects[id].features).length

@@ -37,6 +37,33 @@ def angle_between(data, dim1, dim2):
     angle2 = np.arctan2(pa3 - pa2, pb3 - pb2)
     return math.pi - (angle1 + angle2)
 
+@feature({'dim': 'dim'})
+def variance(data, dim):
+    if not len(data): return 0
+    col = data[dim]
+    return ((col - col.mean())**2).mean()
+
+@feature({'dim1': 'dim', 'dim2': 'dim'})
+def covariance(data, dim1, dim2):
+    if not len(data): return 0
+    col1 = data[dim1]
+    col2 = data[dim2]
+    return ((col1 - col1.mean())*(col2 - col2.mean())).mean()
+
+@feature({'dim': 'dim'})
+def std_dev(data, dim):
+    if not len(data): return 0
+    col = data[dim]
+    return ((col - col.mean())**2).mean()**.5
+
+@feature({'dim': 'dim'})
+def max(data, dim):
+    return data[dim].max()
+
+@feature({'dim': 'dim'})
+def min(data, dim):
+    return data[dim].min()
+
 @feature({'dim1': 'dim', 'dim2': 'dim'})
 def sum_angles(data, dim1, dim2):
     angles = angle_between(data, dim1, dim2)

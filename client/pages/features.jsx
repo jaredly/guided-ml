@@ -2,7 +2,9 @@
 var ModelMix = require('./modelmix')
   , FeatureTable = require('./feature-table.jsx')
   , FeatureEditor = require('./feature-editor.jsx')
+  , InstancePictures = require('./instance-pictures.jsx')
   , features = require('../features')
+  , FEATURES = features.FEATURES
 
 function merge(a, b) {
   for (var c in b) {
@@ -35,11 +37,18 @@ var FeaturesPage = module.exports = React.createClass({
   mixins: [ModelMix],
   getInitialState: function () {
     return {
-      editing: null
+      editing: null,
+      view: 'table',
+      sorting: 1,
     }
   },
   model: function () {
     return this.props.dao.getFeatureOutput(this.props.pid)
+  },
+  toggleView: function () {
+    this.setState({
+      view: this.state.view === 'pictures' ? 'table' : 'pictures'
+    })
   },
   toggleEditing: function (fid) {
     if (this.state.editing === fid) {
@@ -58,7 +67,9 @@ var FeaturesPage = module.exports = React.createClass({
       that.setState({model: model})
     })
   },
-  addFeature: function (ftype) {
+  addFeature: function (e) {
+    ftype = e.target.value
+    if (!FEATURES[ftype]) return
     var that = this
       , name = ftype + ' new ' + ('' + Math.random()).slice(0, 5)
       , args = features.defaultArgs(ftype, this.state.model.headers)
@@ -108,21 +119,54 @@ var FeaturesPage = module.exports = React.createClass({
       </div>
     )
   },
+  sortBy: function (i) {
+    this.setState({sorting: i})
+  },
+  view: function () {
+    if (this.state.view === 'pictures') {
+      return InstancePictures({
+        toggleEditing: this.toggleEditing,
+        selected: this.state.editing,
+        data: this.state.model.data,
+        instances: this.state.model.raw_data,
+        sorting: this.state.sorting,
+        features: this.state.model.features,
+        classes: this.state.model.classes,
+        baseUrl: '/project/' + this.props.pid,
+        sortBy: this.sortBy
+      })
+    } else {
+      return FeatureTable({
+        toggleEditing: this.toggleEditing,
+        selected: this.state.editing,
+        data: this.state.model.data,
+        classes: this.state.model.classes,
+        features: this.state.model.features,
+        sorting: this.state.sorting,
+        sortBy: this.sortBy
+      })
+    }
+  },
   render: function () {
     if (!this.state.model) {
       return <div className='features features--loading'>Loading...</div>
     }
     return (
       <div className='features'>
+        <select className='features__new' value="Add Feature" onChange={this.addFeature}>
+          <option value="Add Feature">Add Feature</option>
+          {
+            Object.keys(FEATURES).map(function (name) {
+              return <option value={name}>{name}</option>
+            })
+          }
+        </select>
+        <button className='features__view' onClick={this.toggleView}>
+          {this.state.view === 'table' ? 'Pictures' : 'Table'}
+        </button>
         {this.showEditFeature()}
-        {FeatureTable({
-            toggleEditing: this.toggleEditing,
-            addFeature: this.addFeature,
-            selected: this.state.editing,
-            data: this.state.model.data,
-            classes: this.state.model.classes,
-            features: this.state.model.features
-          })}
+        {this.view()
+          }
       </div>
     )
   }

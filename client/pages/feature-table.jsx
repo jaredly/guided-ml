@@ -3,17 +3,14 @@ var FEATURES = require('../features').FEATURES
 
 var FeatureTable = module.exports = React.createClass({
   displayName: 'FeatureTable',
-  getInitialState: function () {
-    return {
-      sorting: 1
-    }
-  },
   getDefaultProps: function () {
     return {
       data: null,
+      sorting: 1,
       selected: null,
       toggleEditing: function () {throw 'fail'},
       addFeature: function (){throw 'override'},
+      sortBy: function () {throw 'override'},
       classes: [],
       features: []
     }
@@ -21,17 +18,17 @@ var FeatureTable = module.exports = React.createClass({
   sortBy: function (i, e) {
     e.stopPropagation()
     e.preventDefault()
-    this.setState({sorting: i})
+    this.props.sortBy(i)
   },
   sorter: function (i) {
     var cls = ''
-      , sorting = i+1 === this.state.sorting
+      , sorting = i+1 === this.props.sorting
       , by = i+1
       , down = true
     if (sorting) {
       cls = ' sorting sorting-down'
       by = -by
-    } else if (i+1 === -this.state.sorting) {
+    } else if (i+1 === -this.props.sorting) {
       cls = ' sorting sorting-up'
       down = false
     }
@@ -56,47 +53,38 @@ var FeatureTable = module.exports = React.createClass({
       </td>
     )
   },
-  newFeature: function (e) {
-    var val = e.target.value
-    if (val !== 'New Feature') return this.props.addFeature(val)
-  },
-  render: function () {
-    var data = this.props.data
-      , features = this.props.features
-      , classes = this.props.classes
-      , sorting = this.state.sorting
-      , that = this
-    var indecies = []
+  getIndices: function () {
+    var indices = []
+      , sorting = this.props.sorting
+      , data = this.props.data
     for (var i=0; i<data.length; i++) {
-      indecies.push(i)
+      indices.push(i)
     }
     if (sorting !== 0) {
       if (sorting > 0) {
-        indecies.sort(function (a, b) {
+        indices.sort(function (a, b) {
           var x = data[a][sorting-1]
             , y = data[b][sorting-1]
           return x == y ? 0 : (x > y ? 1 : -1)
         })
       } else {
-        indecies.sort(function (a, b) {
+        indices.sort(function (a, b) {
           var x = data[a][-sorting-1]
             , y = data[b][-sorting-1]
           return x == y ? 0 : (x > y ? -1 : 1)
         })
       }
     }
+    return indices
+  },
+  render: function () {
+    var data = this.props.data
+      , features = this.props.features
+      , classes = this.props.classes
+      , that = this
+      , indices = this.getIndices()
     return (
       <div className='feature-table'>
-        <div className='feature-table__new'>
-          <select value="Add Feature" onChange={this.newFeature}>
-            <option value="Add Feature">Add Feature</option>
-            {
-              Object.keys(FEATURES).map(function (name) {
-                return <option value={name}>{name}</option>
-              })
-            }
-          </select>
-        </div>
         <table>
           <thead>
             <tr>
@@ -109,7 +97,7 @@ var FeatureTable = module.exports = React.createClass({
           </thead>
           <tbody>
             {
-              indecies.map(function (i, x) {
+              indices.map(function (i, x) {
                 var cls = x%2 ? 'row-odd' : 'row-even'
                 cls += ' class-' + classes.indexOf(data[i][1])
                 return (

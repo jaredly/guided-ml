@@ -4,27 +4,43 @@ body {
 }
 
 .class-0 {
-  background-color: #eef;
+  background-color: #41D5D5;
 }
 
 .class-1 {
-  background-color: #fee;
+  background-color: #2AEC2A;
 }
 
 .class-2 {
-  background-color: #efe;
+  background-color: #ECEC00;
 }
 
 .class-3 {
-  background-color: #ffe;
+  background-color: #DD14DD;
 }
 
 .class-4 {
-  background-color: #eff;
+  background-color: #D80B0B;
 }
 
 .class-5 {
-  background-color: #fef;
+  background-color: #FF6EB3;
+}
+
+.class-6 {
+  background-color: #4D4DDA;
+}
+
+.class-7 {
+  background-color: #FF8737;
+}
+
+.class-8 {
+  background-color: #727272;
+}
+
+.class-9 {
+  background-color: #3A997E;
 }
 
 
@@ -86,6 +102,7 @@ body {
 
 .project {
 }
+
 .project__back {
   border: 1px solid #797;
   background-color: #4b6;
@@ -124,126 +141,6 @@ body {
   }
 }
 
-
-
-.features {
-  padding: 0 20px;
-}
-
-.feature-table {
-
-  .sorter {
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: block;
-    padding: 5px;
-    cursor: pointer;
-    border-radius: 10px;
-    font-size: 14px;
-
-    &:hover {
-      background-color: #ccc;
-    }
-    &.sorting {
-      background-color: #ccc;
-    }
-  }
-}
-
-.feature-table {
-  overflow-x: auto;
-  thead {
-    td {
-      font-weight: bold;
-      min-width: 30px;
-
-      &.feature-head {
-        cursor: pointer;
-      }
-
-      .sorter {
-        padding: 5px 10px;
-        cursor: pointer;
-      }
-    }
-  }
-}
-
-
-.feature-table table {
-  min-width: 100%;
-  border-collapse: collapse;
-
-  tr.row-even,
-  tr.row-odd {
-    border-bottom: 2px solid white;
-    font-size: 16px;
-  }
-
-  td {
-    padding: 5px 10px;
-    border-left: 2px solid white;
-  }
-}
-
-.feature-head {
-  position: relative;
-
-  &.selected {
-    background-color: #afa;
-  }
-}
-
-.feature-table__class-head,
-.feature-table__id-head {
-  position: relative;
-}
-
-
-input[type="text"] {
-  border: 1px solid #ccc;
-  padding: 5px 10px;
-  font-size: 16px;
-}
-
-button {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: white;
-  padding: 5px 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.feature-editor {
-  border-bottom: 2px solid #afa;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-}
-
-.feature-editor__name {
-}
-
-
-.feature-editor__attrs {
-  padding: 10px 10px;
-}
-
-.arg-widget:not(:last-child) {
-  margin-bottom: 10px;
-}
-.arg-widget strong {
-  margin-right: 10px;
-}
-
-.arg-widget select {
-  padding: 3px 10px;
-  font-size: 16px;
-}
-
-.feature-editor__close {
-  margin-left: 10px;
-}
+@import "features.less";
 
 

@@ -5,7 +5,9 @@ serve:
 less: index.css
 	@echo -n
 
-index.css: index.less
+less_sources = $(wildcard *.less) $(wildcard **/*.less)
+
+index.css: $(less_sources) index.less
 	lessc index.less > index.css
 
 build: bundle.js

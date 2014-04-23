@@ -1,0 +1,63 @@
+
+.features {
+  padding: 0 20px;
+}
+
+@import "feature-table.less";
+@import "instance-pictures.less";
+
+input[type="text"] {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 16px;
+}
+
+select,
+button {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  padding: 5px 10px;
+  font-size: 16px;
+  cursor: pointer;
+
+  &.active {
+    background-color: #aaa;
+    color: white;
+  }
+  &:hover {
+    background-color: #ddd;
+  }
+}
+
+.feature-editor {
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 2px solid #afa;
+}
+
+.feature-editor__name {
+}
+
+
+.feature-editor__attrs {
+  padding: 10px 10px;
+}
+
+.arg-widget:not(:last-child) {
+  margin-bottom: 10px;
+}
+.arg-widget strong {
+  margin-right: 10px;
+}
+
+.arg-widget select {
+  padding: 3px 10px;
+  font-size: 16px;
+}
+
+.feature-editor__close {
+  margin-left: 10px;
+}
+
+

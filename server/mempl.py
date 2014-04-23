@@ -63,16 +63,14 @@ class MemPL(PL):
         return self.instances[id]
 
     def get_img(self, id, instid):
-        try:
-            return self.metas[id][instid]['img']
-        except IndexError:
+        if instid not in self.metas[id]:
             return None
+        return self.metas[id][instid]['img']
 
     def get_vid(self, id, instid):
-        try:
-            return self.metas[id][instid]['vid']
-        except IndexError:
+        if instid not in self.metas[id]:
             return None
+        return self.metas[id][instid]['vid']
 
     def add_feature(self, id, feature):
         fid = self.nextfid[id]

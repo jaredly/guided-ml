@@ -1,0 +1,145 @@
+
+.instance-pictures {
+  border-top: 2px solid #afa;
+  margin-top: 10px;
+}
+
+.instance-pictures--small {
+
+  .instance-pictures__class {
+    display: none;
+  }
+
+  img {
+    max-width: 100px;
+  }
+}
+.instance-pictures--med {
+  img {
+    max-width: 200px;
+  }
+}
+.instance-pictures--large {
+  img {
+    max-width: 300px;
+  }
+}
+
+.instance-pictures__features {
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+
+  .sorter {
+    padding: 5px 10px 5px 5px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px;
+    margin-left: 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #aaa;
+
+    &:hover {
+      color: black;
+    }
+    &.sorting {
+      color: black;
+      font-weight: bold;
+    }
+  }
+}
+
+.m-list-buttons {
+  display: inline-block;
+  padding: 5px 10px;
+  position: relative;
+  border-radius: 0;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  &:not(.no-select) {
+    cursor: pointer;
+
+    &:not(.selected):hover {
+      background-color: #DFFFDF;
+    }
+  }
+  border-right-width: 0;
+
+
+  i {
+    padding: 5px 5px;
+    margin-right: 5px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: #ccc;
+    }
+  }
+  
+  &:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+  &:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-right-width: 1px;
+  }
+
+  &.selected {
+    background-color: #afa;
+  }
+}
+
+.size-button {
+  .m-list-buttons;
+  padding: 8px 15px;
+}
+
+.instance-pictures__feature {
+  .m-list-buttons;
+  padding: 5px 5px 5px 10px;
+}
+
+.instance-pictures__instances {
+  padding: 10px 0;
+  list-style: none;
+  border-top: 2px solid #afa;
+  margin-top: 10px;
+}
+
+.instance-pictures__instance {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.instance-pictures__instance__table {
+  background-color: #444;
+  width: 100%;
+  margin-top: 10px;
+  color: white;
+  border-radius: 5px;
+}
+
+.instance-pictures__visual {
+  position: relative;
+}
+
+.instance-pictures__title {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 3px 5px;
+  background-color: rgba(0,0,0,.2);
+  color: white;
+  font-weight: bold;
+}
+
+

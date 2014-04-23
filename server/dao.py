@@ -34,9 +34,14 @@ class DAO:
             'headers': self.pl.get_headers(id)
         }
 
+    def raw_dict(self, id):
+        items = self.pl.get_raw_data(id)
+        return dict((i['id'], i) for i in items)
+
     def get_feature_output(self, id):
         return {
             'features': self.feature_list(id),
+            'raw_data': depandas(self.pl.get_raw_data(id)),
             'data': self.make_data(id),
             'headers': self.pl.get_headers(id),
             'classes': list(self.pl.get_classes(id))
@@ -149,10 +154,10 @@ class DAO:
         return target == 'orange'
 
     def get_vid(self, id, instid):
-        self.pl.get_vid(id, instid)
+        return self.pl.get_vid(id, instid)
 
     def get_img(self, id, instid):
-        self.pl.get_img(id, instid)
+        return self.pl.get_img(id, instid)
 
     def update_learner(self, id, lid, name, args):
         self.pl.update_learner(id, lid, name, args)
