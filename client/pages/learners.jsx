@@ -64,24 +64,6 @@ var LearnersPage = module.exports = React.createClass({
       that.setState({model: model, selected: result.learner.id})
     })
   },
-  learnerSummary: function (learner, i) {
-    return (
-      <div className='learner-summary'>
-        {learner.name}
-        {this.state.model.accuracy[learner.id]}
-      </div>
-    )
-  },
-  main: function () {
-    // if this.view === 'all'
-    return (
-      <div className='learners__main'>
-        {
-          this.state.model.learners.map(this.learnerSummary)
-        }
-      </div>
-    )
-  },
   render: function () {
     if (!this.state.model) {
       return <div className='learners learners--loading'>Loading...</div>
@@ -101,7 +83,6 @@ var LearnersPage = module.exports = React.createClass({
             </select>
           </li>
         </ul>
-        {this.main()}
       </div>
     )
   }
