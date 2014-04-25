@@ -56,6 +56,10 @@ def make_app(persist=True):
             return app.route(route, methods=['POST'])(meta)
         return dec
 
+    @get('/')
+    def index():
+        return flask.redirect('/static/index.html')
+
     ## Misc
 
     @get('/features')
