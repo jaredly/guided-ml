@@ -99,6 +99,9 @@ class MemPL(PL):
     def remove_feature(self, id, fid):
         del self.features[id][fid]
 
+    def remove_learner(self, id, lid):
+        del self.learners[id][lid]
+
     def update_feature_name(self, id, fid, name):
         self.features[id][fid]['name'] = name
 

@@ -6,3 +6,5 @@ client/features-raw.json
 server/dump.pck
 client/index.css
 client/learners-raw.json
+client/example/learners-bundle.js
+client/build

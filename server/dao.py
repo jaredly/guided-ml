@@ -137,7 +137,7 @@ class DAO:
                 "has_vid": vdata is not None
             })
             # yield inum, text, idata is not None, vdata is not None
-        self.pl.write_instances(id, instances, metas, global_header, classes)
+        self.pl.write_instances(id, instances, metas, global_header, list(classes))
         return instances, global_header
 
     # features
@@ -151,6 +151,9 @@ class DAO:
 
     def remove_feature(self, id, fid):
         self.pl.remove_feature(id, fid)
+
+    def remove_learner(self, id, fid):
+        self.pl.remove_learner(id, fid)
 
     def update_feature_name(self, id, fid, name):
         self.pl.update_feature_name(id, fid, name)
@@ -193,12 +196,12 @@ class DAO:
         return lid, acc, confusion, classes, assignments, learner
 
     def trained_learner(self, id, lid):
-        features = self.feature_list(id)
         learner  = self.pl.get_learner(id, lid)
-        raw_data = self.pl.get_raw_data(id)
-        data     = utils.make_training_data(raw_data, features)
+        features = self.feature_list(id)
+        classes = self.pl.get_classes(id)
+        data = self.make_pandas(id)
 
-        trained = utils.train_learner(learner, data)
+        trained = utils.train_learner(learner, data, classes)
         return features, trained, learner
 
     def make_data(self, id):
@@ -217,13 +220,15 @@ class DAO:
     def train(self, id, lid):
         learner  = self.pl.get_learner(id, lid)
         data = self.make_pandas(id)
+        classes = self.pl.get_classes(id)
 
-        return utils.validate_learner(learner, data)
+        return utils.validate_learner(learner, data, classes)
 
     def train_all(self, id):
         learners = self.learner_list(id)
         data = self.make_pandas(id)
-        acc, confusion, classes, assignments = utils.validate_learners(learners, data)
+        classes = self.pl.get_classes(id)
+        acc, confusion, classes, assignments = utils.validate_learners(learners, data, classes)
         return acc, confusion, classes, assignments
 
 # vim: et sw=4 sts=4

@@ -2,6 +2,8 @@
 
 var ModelMix = require('./modelmix')
   , LearnerEditor = require('./learner-editor.jsx')
+  , LearnerArgs = require('./learner-args.jsx')
+  , LearnerBody = require('./learner-body.jsx')
   , learners = require('../learners')
   , LEARNERS = learners.LEARNERS
 
@@ -18,16 +20,28 @@ var LearnersPage = module.exports = React.createClass({
   },
   changeLearner: function (id, data) {
   },
+  setSelected: function (id) {
+    this.setState({selected: id})
+  },
   showLearner: function (learner, ix) {
     return (
       <li className='learners__learner' key={learner.id}>
-        <div className='learners__learner-title'>{learner.name}</div>
+        <div className='learners__learner-title'>
+          {learner.name}
+          <span className='learners__accuracy'>
+            {this.state.model.accuracy[learner.id]}
+          </span>
+          {this.state.selection !== learner.id && React.DOM.button({
+            onClick: this.setSelected.bind(null, learner.id)
+          }, 'Edit')}
+        </div>
         {
           this.state.selected === learner.id && LearnerEditor({
             data: learner,
             onChange: this.changeLearner.bind(null, learner.id)
-          })
+          }) || LearnerArgs({data: learner})
         }
+        <LearnerBody data={learner} model={this.state.model}/>
       </li>
     )
   },
@@ -52,7 +66,7 @@ var LearnersPage = module.exports = React.createClass({
     }
     return (
       <div className='learners'>
-        <ul className='learners__left'>
+        <ul className='learners__list'>
           { this.state.model.learners.map(this.showLearner) }
           <li className='learners__new'>
             <select value='New Learner' onChange={this.newLearner}>

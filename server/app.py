@@ -8,6 +8,7 @@ from functools import wraps
 import flask
 import time
 
+import package
 from dao import DAO
 # from levelpl import LevelPL
 from mempl import MemPL
@@ -30,7 +31,6 @@ def make_app(persist=True):
     dao = DAO(pl)
 
     def dump_pl():
-        print 'dumping'
         with open(PICKLE_PATH, 'wb') as fp:
             cPickle.dump(pl, fp)
 
@@ -169,6 +169,12 @@ def make_app(persist=True):
         dao.update_learner(id, lid, name, args)
         return flask.Response(status=204)
 
+    @delete('/project/<int:id>/learner/<int:fid>')
+    @cross_origin()
+    def remove_learner(id, fid):
+        dao.remove_learner(id, fid)
+        return flask.Response(status=204)
+
     @post('/project/<int:id>/train/all')
     @cross_origin()
     def train_all(id):
@@ -185,6 +191,7 @@ def make_app(persist=True):
         dur = time.time() - start
         return jsonify(time=dur, confusion=confusion)
 
+    '''
     @get('/project/<int:id>/compiled/<int:lid>/<target>')
     @cross_origin()
     def get_compiled(id, target, lid):
@@ -194,6 +201,7 @@ def make_app(persist=True):
         res = make_response(text, 200)
         res.headers['Content-type'] = 'application/data'
         return res
+    '''
 
     @get('/project/<int:id>/img/<int:instid>')
     @cross_origin()
@@ -213,6 +221,15 @@ def make_app(persist=True):
             return make_response('No video', 404)
         res = make_response(data, 200)
         res.headers['Content-type'] = 'video/webm'
+        return res
+
+    @get('/project/<int:id>/compiled/<int:lid>')
+    @cross_origin()
+    def get_compiled(id, lid):
+        features, trained, learner = dao.trained_learner(id, lid)
+        zipfile = package.learner(features, trained, learner)
+        res = make_response(zipfile.read(), 200)
+        res.headers['Content-type'] = 'application/data' # TODO figure out mimetype
         return res
     
     return app

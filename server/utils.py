@@ -13,19 +13,20 @@ import csv
 def parse_meta(text):
     return dict(line.strip().split('=') for line in text.decode('ascii').split('\n'))
 
-def train_learner(learner, data):
+def train_learner(learner, data, classes):
     '''takes a learner spec and training data
     returns a trained learner'''
     lcls = make_learner(learner)
-    raise Exception('not implemented')
-    return None
+    data = DataFrame(data)
+    table = pandas_to_orange(data, classes)
+    return lcls(table)
 
-def validate_learners(learners, data, folds=10):
+def validate_learners(learners, data, classes, folds=10):
     data = DataFrame(data)
     if not learners:
-        return {}, {}
+        return {}, {}, [], {}
     lclss = [make_learner(learner) for learner in learners]
-    table = pandas_to_orange(data)
+    table = pandas_to_orange(data, classes)
     results = crossValidation(lclss, table, folds=folds)
     acc = CA(results)
     confusion = computeConfusionMatrices(results)
@@ -38,17 +39,19 @@ def validate_learners(learners, data, folds=10):
         assignments[learners[i]['id']] = [res.classes[i] for res in results.results]
     return acc_d, conf_d, results.class_values, assignments
 
-def validate_learner(learner, data, folds=10):
+def validate_learner(learner, data, classes, folds=10):
     '''takes a learner spec and training data
     returns a confusion matrix with the ids of the original data'''
     data = DataFrame(data)
     lcls = make_learner(learner)
-    table = pandas_to_orange(data)
+    table = pandas_to_orange(data, classes)
     results = crossValidation([lcls], table, folds=folds)
     acc = CA(results)[0]
-    confusion = computeConfusionMatrices(results)
+    confusion = computeConfusionMatrices(results)[0]
+    if type(confusion) != list:
+        confusion = [[len(data)]]
     assignments = [res.classes[0] for res in results.results]
-    return acc, confusion[0], results.class_values, assignments
+    return acc, confusion, results.class_values, assignments
 
 def make_training_data(instances, header, features):
     ffunctions = map(make_feature, features)
@@ -77,18 +80,20 @@ def applyOrZero(fn, arg, id):
 def list_learners():
     return []
 
-def orange_feature(name, col):
+def orange_feature(name, col, values=None):
     t = col.dtype.name
     if t == 'object':
-        return Orange.feature.Discrete(str(name), values=list(col.unique()))
+        if values is None:
+            values = list(col.unique())
+        return Orange.feature.Discrete(str(name), values=values)
     if t in ('float64', 'int64', 'float32', 'int32'):
-        return Orange.feature.Continuous(name)
+        return Orange.feature.Continuous(str(name))
     raise Exception('Invalid data type: ' + t)
 
-def pandas_to_orange(dframe):
+def pandas_to_orange(dframe, classes):
     features = [orange_feature(name, dframe[name]) for name in dframe.columns[2:]]
     vclass = dframe.columns[1]
-    features.append(orange_feature(vclass, dframe[vclass]))
+    features.append(orange_feature(vclass, dframe[vclass], classes))
     domain = Orange.data.Domain(features)
     ncols = list(dframe.columns)
     ncols.pop(0)

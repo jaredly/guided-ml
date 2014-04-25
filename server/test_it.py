@@ -21,7 +21,7 @@ import pytest
 
 @pytest.fixture
 def app():
-    app = make_app()
+    app = make_app(False)
     app.config['TESTING'] = True
     return app.test_client()
 
@@ -102,7 +102,7 @@ class TestProjectStuff:
         )), content_type='application/json')
         assert rv.status_code == 200
         data = json.loads(rv.data.decode('utf8'))
-        assert data['accuracy'] == [5/3.0]
+        assert data['accuracy'] == 0.0
 
         rv = featured_app.delete('/project/0/learner/0')
         assert rv.status_code == 204
