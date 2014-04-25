@@ -23,13 +23,17 @@ var LearnersPage = module.exports = React.createClass({
   setSelected: function (id) {
     this.setState({selected: id})
   },
+  exportLink: function (lid) {
+    return '/project/' + this.props.pid + '/compiled/' + lid
+  },
   showLearner: function (learner, ix) {
+    var exportLink = this.exportLink(learner.id)
     return (
       <li className='learners__learner' key={learner.id}>
         <div className='learners__learner-title'>
           {learner.name}
           <span className='learners__accuracy'>
-            {this.state.model.accuracy[learner.id]}
+            {('' + this.state.model.accuracy[learner.id]).slice(0, 5)}
           </span>
           {this.state.selection !== learner.id && React.DOM.button({
             onClick: this.setSelected.bind(null, learner.id)
@@ -37,11 +41,11 @@ var LearnersPage = module.exports = React.createClass({
         </div>
         {
           this.state.selected === learner.id && LearnerEditor({
-            data: learner,
+            value: learner,
             onChange: this.changeLearner.bind(null, learner.id)
           }) || LearnerArgs({data: learner})
         }
-        <LearnerBody data={learner} model={this.state.model}/>
+        <LearnerBody data={learner} model={this.state.model} exportLink={exportLink}/>
       </li>
     )
   },

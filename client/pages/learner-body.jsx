@@ -7,7 +7,8 @@ module.exports = React.createClass({
   getDefaultProps: function () {
     return {
       data: null,
-      model: null
+      model: null,
+      exportLink: '#export'
     }
   },
   render: function () {
@@ -21,6 +22,7 @@ module.exports = React.createClass({
       <div className='learner-body'>
         <h4>Confusion Matrix</h4>
         <Confusion matrix={conf} classes={classes}/>
+        <a className='learner-body__export' href={this.props.exportLink}>Export Learner</a>
       </div>
     )
   }

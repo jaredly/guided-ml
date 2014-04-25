@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from os import join, dirname
-from squig import featurify
+from os.path import join, dirname
 from cStringIO import StringIO
 import cPickle
+import pandas
 import json
 import sys
 
@@ -22,14 +22,18 @@ BASE = dirname(__file__)
 CLSS = join(BASE, 'classifier.pck')
 
 def get_input():
-    return sys.stdin.read()
+    try:
+        return sys.stdin.read()
+    except KeyboardInterrupt:
+        print>>sys.stderr, "Input cancelled"
+        return False
 
 def get_class(classifier, features, text):
     sio = StringIO(text)
     data = pandas.read_csv(sio)
     line = [feature(data) for feature in features]
 
-    return classifier(line)
+    return classifier(line + [classifier.class_var.values[0]])
 
 def load_features(items):
     '''Takes a list of json specifications, returns a list of functions '''
@@ -39,9 +43,14 @@ def load_features(items):
 
 if __name__ == '__main__':
     classifier = cPickle.load(open(CLSS, 'rb'))
-    features = load_features(join.load(open(join(BASE, 'features.json'))))
+    features = load_features(json.load(open(join(BASE, 'features.json'))))
 
+    print >> sys.stderr, 'Ready for input'
     text = get_input()
+    if not text:
+        print>>sys.stderr, "No input received"
+        sys.exit(1)
+
     print get_class(classifier, features, text)
 
 '''

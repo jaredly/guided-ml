@@ -6,6 +6,10 @@ React.renderComponent(LearnersPage({
   dao: {
     getLearnerData: function () {
       return new Promise(function (res, rej) {
+        if (res.resolve) {
+          rej = res.reject.bind(res)
+          res = res.resolve.bind(res)
+        }
         setTimeout(function () {
         res({
           classes: ['A', 'B', 'C'],
@@ -22,7 +26,7 @@ React.renderComponent(LearnersPage({
             1: [[2,3,4],[3,4,5],[4,5,6]],
           },
           accuracy: {
-            1: 0.798
+            1: 0.79823423423423
           },
           assignments: {
             0: 0,

@@ -27,9 +27,9 @@ var Confusion = module.exports = React.createClass({
               <tr key={i}>
                 <td>{classes[i]}</td>
                 {
-                  row.map(function (num, i) {
+                  row.map(function (num, j) {
                     return (
-                      <td key={i}>{num}</td>
+                                <td key={j} className={i === j? 'confusion__diag' : ''}>{num}</td>
                     )
                   })
                 }

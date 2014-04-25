@@ -98,7 +98,7 @@ def custom(data, code):
 def make_feature(feature):
     if feature['type'] not in features:
         return None
-    print 'making feature', feature['type'], feature['args']
+    # print 'making feature', feature['type'], feature['args']
     def meta(data):
         return features[feature['type']]['func'](data, **feature['args'])
     return meta

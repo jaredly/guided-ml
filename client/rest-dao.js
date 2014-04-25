@@ -13,6 +13,10 @@ RestDAO.prototype = {
     var url = this.host + dest
       , sub = arguments.length === 2
     return new Promise(function (resolve, reject) {
+      if (resolve.resolve) {
+        reject = resolve.reject.bind(resolve)
+        resolve = resolve.resolve.bind(resolve)
+      }
       request.del(url)
         .end(function (err, res) {
           if (err) return reject(err)
@@ -25,6 +29,10 @@ RestDAO.prototype = {
     var url = this.host + dest
       , sub = arguments.length === 2
     return new Promise(function (resolve, reject) {
+      if (resolve.resolve) {
+        reject = resolve.reject.bind(resolve)
+        resolve = resolve.resolve.bind(resolve)
+      }
       request.get(url)
         .end(function (err, res) {
           if (err) return reject(err)
@@ -37,6 +45,10 @@ RestDAO.prototype = {
     var url = this.host + dest
       , sub = arguments.length === 3
     return new Promise(function (resolve, reject) {
+      if (resolve.resolve) {
+        reject = resolve.reject.bind(resolve)
+        resolve = resolve.resolve.bind(resolve)
+      }
       request.post(url)
         .send(data)
         .end(function (err, res) {
