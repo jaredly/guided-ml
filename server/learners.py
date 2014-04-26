@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 from Orange.classification.neural import NeuralNetworkLearner
+from Orange.classification.knn import kNNLearner
+from Orange.classification.svm import SVMLearner
+from Orange.classification.tree import C45Learner
+from Orange.classification.bayes import NaiveLearner
+from Orange.classification.logreg import LogRegLearner
 
 learners = {}
 
@@ -24,6 +29,37 @@ def learner(args, title=None, name=None):
         }
         return func
     return meta
+
+@learner({
+    # adjust_threshhold - bool .. not yet supported
+})
+def naive_bayes():
+    return NaiveLearner()
+
+@learner({
+})
+def knn():
+    return kNNLearner()
+
+@learner({
+    # normalization
+})
+def svm():
+    return SVMLearner()
+
+'''
+@learner({
+    # trials
+})
+def dtree():
+    return C45Learner()
+
+@learner({
+})
+def logreg():
+    return LogRegLearner()
+'''
+
 
 @learner({
     'n_mid': {

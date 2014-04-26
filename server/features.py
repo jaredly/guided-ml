@@ -22,20 +22,30 @@ def feature(args, title=None, name=None):
         return func
     return meta
 
-def angle_between(data, dim1, dim2):
-    dat1 = data[dim1]
-    pa1 = dat1[:-2]
-    pa2 = dat1[1:-1]
-    pa3 = dat1[2:]
+def two_angles(col1, col2):
+    pa1 = col1[:-2].reset_index(drop=True)
+    pa2 = col1[1:-1].reset_index(drop=True)
+    pa3 = col1[2:].reset_index(drop=True)
 
-    dat2 = data[dim2]
-    pb1 = dat2[:-2]
-    pb2 = dat2[1:-1]
-    pb3 = dat2[2:]
+    pb1 = col2[:-2].reset_index(drop=True)
+    pb2 = col2[1:-1].reset_index(drop=True)
+    pb3 = col2[2:].reset_index(drop=True)
 
     angle1 = np.arctan2(pa2 - pa1, pb2 - pb1)
     angle2 = np.arctan2(pa3 - pa2, pb3 - pb2)
+    return angle1, angle2
+
+def angle_between(data, dim1, dim2):
+    dat1 = data[dim1]
+    dat2 = data[dim2]
+    angle1, angle2 = two_angles(dat1, dat2)
     return math.pi - (angle1 + angle2)
+
+def angle_2_between(data, dim1, dim2):
+    dat1 = data[dim1]
+    dat2 = data[dim2]
+    angle1, angle2 = two_angles(dat1, dat2)
+    return angle2 + angle1
 
 @feature({'dim': 'dim'})
 def variance(data, dim):
@@ -77,6 +87,27 @@ def ssangles(data, dim1, dim2):
     angles = angle_between(data, dim1, dim2)
     return (angles**2).sum()
 
+@feature({'dim1': 'dim', 'dim2': 'dim'})
+def angles_4(data, dim1, dim2):
+    angles = angle_between(data, dim1, dim2)
+    return (angles**4).sum()
+
+@feature({'dim1': 'dim', 'dim2': 'dim'})
+def sum_angles2(data, dim1, dim2):
+    if not len(data): return 0
+    angles = angle_2_between(data, dim1, dim2)
+    return angles.sum()
+
+@feature({'dim1': 'dim', 'dim2': 'dim'})
+def ssangles2(data, dim1, dim2):
+    angles = angle_2_between(data, dim1, dim2)
+    return (angles**2).sum()
+
+@feature({'dim1': 'dim', 'dim2': 'dim'})
+def angles_4_2(data, dim1, dim2):
+    angles = angle_2_between(data, dim1, dim2)
+    return (angles**4).sum()
+
 @feature({'dimension': 'dim'})
 def average(data, dimension):
     '''Computes the average of a dimention'''
@@ -91,7 +122,7 @@ def average(data, dimension):
     }})
 def custom(data, code):
     compiled = compile(code, 'custom-feature', 'exec')
-    scope = {'data': data, 'output': 0}
+    scope = {'data': data, 'output': 0, 'np': np, 'angle_between': angle_between, 'angle_2_between': angle_2_between}
     exec(compiled, scope)
     return scope['output']
 
