@@ -47,6 +47,43 @@ POST /projects/{id}/train/{id}
 GET /projects/{id}/compiled/{lang}/{id}
 ```
 
+# Pages
+
+- Project Selection
+- Features
+  - Main View
+    - Create New
+  - Sidebar Data View
+    - Full view w/ sort
+    - Filtered view (grouped with titles, and a back button)
+    - Spotlight - just one
+  - Results bottom pane
+    - dropdown w/ list of prev results
+    - checkbox "compare with current"
+    - list of learners
+    - accurecy listing
+    - confusion matrix
+- Reduction
+  - Main view
+  - Plugin-based.
+- Learners
+
+- App selection
+- Project View
+  - data view (table / images)
+    - what are we viewing? all / some subset [with headers of you want]
+    - can have a column that is "class given by x" -- but do I really need?
+      Later
+  - editor sidebar
+    - feature editor
+    - feature reduction techniques
+  - results bottombar
+    - select 'all' or individual learner to inspect
+    - show learner results
+    - show trial results. . ? like in a graph.
+    - compare to a previous run.
+    - select cells of a confusion matrix and have then show up in the data
+      view.
 
 # Data Model
 
