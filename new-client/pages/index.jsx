@@ -11,6 +11,14 @@ var Main = React.createClass({
       user: null
     }
   },
+  getDefaultProps: function () {
+    return {
+      dao: null
+    }
+  },
+  context: function () {
+    return {dao: this.props.dao}
+  },
   routes: {
     '': 'projects',
     'login': [Login, function () {

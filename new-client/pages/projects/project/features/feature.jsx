@@ -8,13 +8,6 @@ var Feature = module.exports = React.createClass({
   model: function (done) {
     this.props.dao.getFeature(this.props.id, done)
   },
-  componentWillMount: function () {
-    if (this.props.param === 'new') {
-      return this.setState({
-        model:
-      })
-    }
-  },
   render: function () {
     var feature = this.state.model && this.state.model.feature
       , data = this.state.model && this.state.model.data
