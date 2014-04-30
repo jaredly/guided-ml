@@ -6,7 +6,6 @@ var Login = require('./login.jsx')
 
 var Main = React.createClass({
   mixins: [Router],
-
   getInitialState: function () {
     return {
       user: null

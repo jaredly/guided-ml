@@ -1,29 +1,23 @@
 /** @jsx React.DOM */
 
-var ListProjects = module.exports = React.createClass({
+var Router = require('react-router')
+
+var ListProjects = module.exports = react.createClass({
   displayName: 'ListProjects',
+  mixins: [Router],
   enter: function () {
     if (!this.props..user) {
       return this.props.goTo('login')
     }
   },
-    displayName: 'ListProjects',
-    render: function () {
-    }
-  })
+  render: function () {
+    return (
+      <div className='list-projects'>
+        Partieness
+      </div>
+    )
+  }
 })
-
-module.exports = {
-  routes: {
-  },
-  enter: function (context, args) {
-    if (!context.user) {
-      return context.router.goTo('login')
-    }
-  },
-  view: React.createClass({
-  })
-}
 
 // vim: set tabstop=2 shiftwidth=2 expandtab:
 
