@@ -1,6 +1,6 @@
 
 var _ = require('lodash')
-  , base = require('./base')
+  , Base = require('./base')
 
 module.exports = TestBack
 

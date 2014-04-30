@@ -4,7 +4,8 @@ var Login = require('./login.jsx')
 
   , Router = require('react-router')
 
-var Main = React.createClass({
+var Main = module.exports = React.createClass({
+  displayName: 'Main',
   mixins: [Router],
   getInitialState: function () {
     return {
