@@ -1,9 +1,12 @@
 /** @jsx React.DOM */
 
+var Model = require('react-model')
+
 var ListProjects = module.exports = React.createClass({
   displayName: 'ListProjects',
-  getInitialState: function () {
-    return {}
+  mixins: [Model],
+  model: function (done) {
+    this.props.ctx.dao.listProjects(done)
   },
   render: function () {
     var goTo = this.props.goTo

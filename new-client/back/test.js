@@ -11,6 +11,7 @@ function TestBack() {
   this.nids = {
     features: 100,
   }
+  Base.call(this)
 }
 
 _.extend(TestBack.prototype, {
@@ -18,6 +19,12 @@ _.extend(TestBack.prototype, {
     var id = this.nids[type]
     this.nids[type]+=1
     return id
+  },
+  _listProjects: function (done) {
+    var data = this.data
+    done(null, Object.keys(this.data).map(function (id) {
+      return {id: id, name: data[id].name}
+    }))
   },
   _createFeature: function (pid, name, type, args, done) {
     var id = this.nid('features')

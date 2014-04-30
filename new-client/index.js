@@ -1,6 +1,7 @@
 
 var Main = require('./pages/index.jsx')
-  , dao = require('./back/test')()
+  , Dao = require('./back/test')
+  , dao = new Dao()
 
 React.renderComponent(Main({
   dao: dao
