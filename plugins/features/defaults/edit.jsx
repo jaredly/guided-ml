@@ -6,7 +6,7 @@ module.exports = React.createClass({
   getDefaultProps: function () {
     return {
       onApply: function (){ throw 'override' },
-      dimargs: ['dim'],
+      aegWidget: function (){ throw 'override' },
       dims: null,
       args: null,
       data: null,
@@ -56,6 +56,7 @@ module.exports = React.createClass({
               </label>
             )
           }.bind(this))
+        }
         <h4>Which Stats</h4>
         <table>
           {

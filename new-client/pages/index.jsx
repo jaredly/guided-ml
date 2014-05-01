@@ -17,8 +17,11 @@ var Main = module.exports = React.createClass({
       dao: null
     }
   },
-  context: function () {
+  getContext: function () {
     return {dao: this.props.dao}
+  },
+  title: function () {
+    return 'Guided ML'
   },
   routes: {
     '': 'projects',

@@ -1,12 +1,16 @@
 /** @jsx React.DOM */
 
 var Model = require('react-model')
+  , Router = require('react-router')
 
 var ListProjects = module.exports = React.createClass({
   displayName: 'ListProjects',
-  mixins: [Model],
+  mixins: [Model, Router],
   model: function (done) {
     this.props.ctx.dao.listProjects(done)
+  },
+  title: function () {
+    return 'List Projects - Guided ML'
   },
   render: function () {
     var goTo = this.props.goTo
