@@ -9,9 +9,7 @@ var ListProjects = module.exports = React.createClass({
   model: function (done) {
     this.props.ctx.dao.listProjects(done)
   },
-  title: function () {
-    return 'List Projects - Guided ML'
-  },
+  title: 'List Projects - Guided ML',
   render: function () {
     var goTo = this.props.goTo
     return (
