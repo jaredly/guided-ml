@@ -1,5 +1,7 @@
 /** @jsx React.DOM */
 
+var FeatureTypePicker = require('./feature-type-picker.jsx')
+
 var NewFeature = module.exports = React.createClass({
   displayName: 'NewFeature',
   getInitialState: function () {

@@ -3,43 +3,56 @@
 var AllFeatures = require('./all-features.jsx')
   , NewFeature = require('./new-features.jsx')
   , Feature = require('./feature.jsx')
+  , DropDown = require('general-ui').DropDown
+  , InstanceViewer = require('./instance-viewer.jsx')
 
   , Router = require('react-router')
+  , Model = require('react-model')
 
 var Features = module.exports = React.createClass({
   displayName: 'Features',
-  mixins: [Router],
+  mixins: [Router, Model],
+  model: function (done) {
+    this.props.ctx.dao.listFeatures(this.props.ctx.pid, done)
+  },
   routes: {
     '': AllFeatures,
     'new': NewFeature,
     '*': Feature
   },
+
   render: function () {
     var features = this.state.model
       , current = this.state._route.name
       , items = [['All', '']]
-    for (var i=0; i<features.length; i++) {
-      items.push([features[i].name, features[i].id])
+    if (features) {
+      for (var i=0; i<features.length; i++) {
+        items.push([features[i].name, features[i].id])
+      }
+    } else {
+      items.push(['Loading...', false])
     }
-    items.push(['New', 'new'])
     return (
       <div className='features'>
         <div className='features__header'>
-          {DropDown({
+          {features.length ? DropDown({
             className: 'features__dropdown',
-            action: this.goTo,
+            onChange: this.goTo,
             value: current,
             items: items
-          })}
+          }) : 'No features yet...'}
+          <button onClick={this.goTo.bind(null, 'new', false, false)}>New Feature</button>
         </div>
         <div className='features__row'>
           <div className='features__main'>
             {this.outlet()}
           </div>
-          {InstanceViewer({
-            dao: this.props.dao,
-            feature: current,
-          })}
+          <div className='features__instances'>
+            {InstanceViewer({
+              dao: this.props.dao,
+              feature: current,
+            })}
+          </div>
         </div>
         <div className='features__results'>
           <div className='features__restults-head'>

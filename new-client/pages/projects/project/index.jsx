@@ -4,6 +4,7 @@ var DropDown = require('general-ui').DropDown
   , Features = require('./features/index.jsx')
   // , Reducers = require('./re
   , Learners = require('./learners/index.jsx')
+  , Main = require('./main.jsx')
 
   , Router = require('react-router')
 
@@ -11,38 +12,36 @@ var Project = module.exports = React.createClass({
   displayName: 'Project',
   mixins: [Router],
   routes: {
-    '': 'features',
+    '': Main,
     'features': Features,
     'learners': Learners,
     // 'reducers': Reducers,
   },
-  getDefaultProps: function () {
+  getContext: function () {
     return {
-      projectListing: function () {throw 'override'}
+      pid: this.props.param
     }
   },
   switchPage: function (page) {
-    if (page === false) return this.props.projectListing()
     this.goTo(page)
   },
   render: function () {
-    var route = this.state._route.name
+    var route = this.state._route
     return (
       <div className='project'>
         <div className='project__header'>
           {DropDown({
             className: 'project__dropdonw',
             selected: route,
-            action: this.switchPage,
+            onChange: this.switchPage,
             items: [
               ['Project', '/'],
               ['Features', '/features'],
               // ['Reducers', '/reducers'],
               ['Learners', '/learners'],
-              ['Close', false],
+              ['Close', '../'],
             ]
           })}
-          Header here!
         </div>
         {this.outlet()}
       </div>
