@@ -35,11 +35,11 @@ var Project = module.exports = React.createClass({
             selected: route,
             onChange: this.switchPage,
             items: [
-              ['Project', '/'],
-              ['Features', '/features'],
-              // ['Reducers', '/reducers'],
-              ['Learners', '/learners'],
-              ['Close', '../'],
+              ['Project', ''],
+              ['Features', 'features'],
+              // ['Reducers', 'reducers'],
+              ['Learners', 'learners'],
+              ['Close', '..'],
             ]
           })}
         </div>
