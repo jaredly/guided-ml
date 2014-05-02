@@ -29,18 +29,23 @@ var NewProject = module.exports = React.createClass({
   render: function () {
     return (
       <div className='new-project'>
-        <button className='new-project__back'
-          onClick={this.props.goTo.bind(null, '', false, false)}>Back</button>
-        <h1 className='new-project__title'>
-          New Project!!
-        </h1>
-        <input type='text'
-          value={this.state.name}
-          onChange={this.changeName}
-          placeholder='New Project Name'/>
-        <input type='file' onChange={this.changeFile}/>
-        <button className='new-project__create'
-          onClick={this.onCreate}>Create</button>
+        <div className='new-project__head'>
+          <button className='new-project__back'
+            onClick={this.props.goTo.bind(null, '', false, false)}>Back</button>
+          <span className='new-project__title'>
+            Create a new project
+          </span>
+        </div>
+        <div className='new-project__body'>
+          <input type='text'
+            className='new-project__name'
+            value={this.state.name}
+            onChange={this.changeName}
+            placeholder='New Project Name'/>
+          <input type='file' onChange={this.changeFile}/>
+          <button className='new-project__create'
+            onClick={this.onCreate}>Create</button>
+        </div>
       </div>
     )
   }

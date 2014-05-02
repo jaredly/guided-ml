@@ -14,7 +14,9 @@ var ListProjects = module.exports = React.createClass({
     var goTo = this.props.goTo
     return (
       <div className='list-projects'>
-        Projects
+        <span className='list-projects__title'>
+          Projects
+        </span>
         <ul className='list-projects__list'>
           {this.state.loading && 'Loading...'}
           {
@@ -27,7 +29,8 @@ var ListProjects = module.exports = React.createClass({
             })
           }
           <li className='list-projects__new' onClick={goTo.bind(null, 'new', false, false)}>
-            New Project
+            Create New Project
+
           </li>
         </ul>
       </div>
