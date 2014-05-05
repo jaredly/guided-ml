@@ -2,9 +2,11 @@
 
 var FeatureEditor = require('./feature-editor.jsx')
   , FeatureEffectsViewer = require('./feature-effects-viewer.jsx')
+  , Model = require('react-model')
 
 var Feature = module.exports = React.createClass({
   displayName: 'Feature',
+  mixins: [Model],
   model: function (done) {
     this.props.dao.getFeature(this.props.id, done)
   },

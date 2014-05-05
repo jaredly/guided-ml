@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-var ListProjects = require('./list-projects.jsx')
+var ListProjects = require('./list-projects/index.jsx')
   , NewProject = require('./new-project.jsx')
   , Project = require('./project/index.jsx')
 

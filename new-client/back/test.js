@@ -31,6 +31,24 @@ _.extend(TestBack.prototype, {
       return {id: id, name: data[id].name}
     }))
   },
+  _getResultsList: function (id, done) {
+    done(null [
+      {id: 100, name: '2 Minutes ago'},
+      {id: 101, name: '3 Minutes ago'},
+      {id: 102, name: '4 Minutes ago'}
+    ])
+  },
+  _getResults: function (id, rid, done) {
+    done(null, {
+      learnerid: {
+        confusion: [],
+        assignments: [],
+        accuracy: 100,
+        extra: {},
+        id: rid,
+      }
+    })
+  },
   _getInstances: function (id, done) {
     done(null, [
       {img: true, vclass: 'party'},
@@ -79,6 +97,7 @@ _.extend(TestBack.prototype, {
     })
   },
   _getProject: function (id, done) {
+    if (!this.data[id]) return done(new Error('Project not found: ' + id))
     done(null, this.data[id])
   },
   _createFeature: function (pid, name, type, args, done) {
@@ -98,6 +117,12 @@ _.extend(TestBack.prototype, {
     })
   },
   _getFeature: function (pid, id, done) {
+    if (!this.data[pid]) {
+      return done(new Error('Project not found: ' + pid))
+    }
+    if (!this.data[pid].features[id]) {
+      return done(new Error('Feature not found: ' + id + ' : for project: ' + pid))
+    }
     done(null, {
       feature: this.data[pid].features[id],
       data: {

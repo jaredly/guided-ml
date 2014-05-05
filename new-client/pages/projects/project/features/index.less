@@ -1,13 +1,48 @@
 
 .features {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .features__row {
   display: flex;
+  flex: 1;
 }
 
 .features__main {
   flex: 1;
+}
+
+.features__header {
+  display: flex;
+  padding: 5px;
+}
+
+.features__dropdown {
+  flex: 1;
+  background-color: white;
+  border: 1px solid #ccc;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.features__new {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.features__new--nofeatures {
+  flex: 1;
+}
+
+.features__new--making {
+  flex: 1;
+  cursor: default;
+  color: blue;
+  font-style: italic;
+  border-color: white;
 }
 
 .features__instances {

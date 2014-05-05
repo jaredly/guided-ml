@@ -3,11 +3,20 @@
 var Model = require('react-model')
   , Router = require('react-router')
 
+  , Body = require('./body.jsx')
+  // , Loading = require('./loading.jsx')
+  // , ErrorPage = require('./error.jsx')
+
 var ListProjects = module.exports = React.createClass({
   displayName: 'ListProjects',
   mixins: [Model, Router],
   model: function (done) {
     this.props.ctx.dao.listProjects(done)
+  },
+  routes: {
+    _index: Body,
+    // _loading: Loading,
+    // _error: ErrorPage
   },
   title: 'List Projects - Guided ML',
   render: function () {
@@ -17,22 +26,7 @@ var ListProjects = module.exports = React.createClass({
         <span className='list-projects__title'>
           Projects
         </span>
-        <ul className='list-projects__list'>
-          {this.state.loading && 'Loading...'}
-          {
-            this.state.model && this.state.model.map(function (project) {
-              return (
-                <li className='list-projects__project' onClick={goTo.bind(null, project.id, false, false)}>
-                  {project.name}
-                </li>
-              )
-            })
-          }
-          <li className='list-projects__new' onClick={goTo.bind(null, 'new', false, false)}>
-            Create New Project
-
-          </li>
-        </ul>
+        {this.outlet()}
       </div>
     )
   }

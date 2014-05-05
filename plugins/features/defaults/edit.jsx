@@ -1,5 +1,4 @@
 
-var _ = require('lodash')
 
 module.exports = React.createClass({
   displayName: '1 Dim Statistics',
@@ -14,7 +13,7 @@ module.exports = React.createClass({
   },
   getInitialState: function () {
     return {
-      data: _.cloneDeep(this.props.data)
+      data: this.props.data // _.cloneDeep(this.props.data)
     }
   },
   updata: function (update) {

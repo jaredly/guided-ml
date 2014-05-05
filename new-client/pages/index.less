@@ -16,13 +16,18 @@ input[type='file'] {
 }
 
 button {
-  background-color: white;
+  background-color: red;
   border: 1px solid #aaa;
   padding: 3px 7px;
   cursor: pointer;
   color: #333;
 
-  &:hover {
+  &[disabled] {
+    background-color: #e0e0e0;
+    cursor: normal;
+  }
+
+  &:not([disabled]):hover {
     background-color: #ddd;
   }
 }

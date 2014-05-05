@@ -7,15 +7,19 @@ var DropDown = require('general-ui').DropDown
   , Main = require('./main.jsx')
 
   , Router = require('react-router')
+  , Model = require('react-model')
 
 var Project = module.exports = React.createClass({
   displayName: 'Project',
-  mixins: [Router],
+  mixins: [Router, Model],
   routes: {
     '': Main,
     'features': Features,
     'learners': Learners,
     // 'reducers': Reducers,
+  },
+  model: function (done) {
+    this.props.ctx.dao.getProject(this.props.param, done)
   },
   getContext: function () {
     return {
@@ -27,6 +31,7 @@ var Project = module.exports = React.createClass({
   },
   render: function () {
     var route = this.state._route
+      , name = this.state.model ? this.state.model.name : 'Project Loading...'
     return (
       <div className='project'>
         <div className='project__header'>
@@ -35,7 +40,7 @@ var Project = module.exports = React.createClass({
             selected: route,
             onChange: this.switchPage,
             items: [
-              ['Project', ''],
+              [name, ''],
               ['Features', 'features'],
               // ['Reducers', 'reducers'],
               ['Learners', 'learners'],
@@ -43,7 +48,9 @@ var Project = module.exports = React.createClass({
             ]
           })}
         </div>
-        {this.outlet()}
+        <div className='project__body'>
+          {this.outlet()}
+        </div>
       </div>
     )
   }

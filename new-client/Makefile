@@ -1,12 +1,15 @@
 
 build: once
-	watchify --debug -t reactify index.js -o build/bundle.js -v
+	watchify --debug -t reactify -t bulkify index.js -o build/bundle.js -v
+
+dev:
+	browserify --debug -t reactify -t bulkify -t fusion pages/index.jsx -o dev/bundle.js
 
 css:
 	browserify -p [ splitlessify --filename build/new-css.css --watch ] index.js -o /dev/null
 
 once:
-	browserify --debug -t reactify index.js -o build/bundle.js
+	browserify --debug -t reactify -t bulkify index.js -o build/bundle.js
 
 # build: build/bundle.js
 # @echo -n
@@ -25,5 +28,5 @@ build/bundle.css: $(LESS)
 clean:
 	rm build/bundle.js
 
-.PHONY: build less
+.PHONY: build less dev
 

@@ -8,3 +8,5 @@ client/index.css
 client/learners-raw.json
 client/example/learners-bundle.js
 client/build
+new-client/build
+new-client/dev

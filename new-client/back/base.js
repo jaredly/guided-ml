@@ -51,7 +51,8 @@ Base.prototype = {
         instances: obj.instances,
         feature_data: {},
         raw_data: [],
-        results: [],
+        results_list: [],
+        results: {}
       }
       return done(err, obj)
     }.bind(this))
@@ -67,6 +68,19 @@ Base.prototype = {
       return done(null, this.cache.projects[id])
     }
     this._getProject(id, done)
+  },
+
+  getResultsList: function (id, done) {
+    if (this.cache.data[id].results_list) {
+      return done(null, this.cache.data[id].results_list)
+    }
+    this._getResultsList(id, done)
+  },
+  getResults: function (id, rid, done) {
+    if (this.cache.data[id].results[rid]) {
+      return done(null, this.cache.data[id].results[rid])
+    }
+    this._getResults(id, rid, done)
   },
   // done(err, {})
   _getProject: function (id, done) {

@@ -18,7 +18,11 @@ var NewProject = module.exports = React.createClass({
   changeFile: function (e) {
     this.setState({file: e.target.files[0]})
   },
+  enabled: function () {
+    return this.state.name && this.state.file
+  },
   onCreate: function () {
+    if (!this.enabled()) return
     this.props.ctx.dao.createProject(
         this.state.name,
         this.state.file,
@@ -44,6 +48,7 @@ var NewProject = module.exports = React.createClass({
             placeholder='New Project Name'/>
           <input type='file' onChange={this.changeFile}/>
           <button className='new-project__create'
+            disabled={!this.enabled()}
             onClick={this.onCreate}>Create</button>
         </div>
       </div>

@@ -1,0 +1,11 @@
+{
+  "simple": {
+    "name": "Awesome Feature",
+    "type": "custom",
+    "buttonText": "Evaluate",
+    "args": {
+      "code": "output = data['x'].mean()"
+    }
+  }
+}
+

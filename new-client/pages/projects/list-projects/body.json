@@ -1,0 +1,11 @@
+{
+  "empty": {
+    "model": [
+    ]
+  },
+  "one": {
+    "model": [
+      {"id": 23, "name": "Awesome"}
+    ]
+  }
+}

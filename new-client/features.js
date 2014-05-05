@@ -1,7 +1,8 @@
 
 var bulk = require('bulk-require')
-  , plugins = bulk(__dirname, '../plugins/features/*/index.js')
+var tree = bulk(__dirname, '../plugins/features/*/index.js')
   , features = {}
+  , plugins = tree['..'].plugins.features
 
 function register(name, title, args, doc) {
   features[name] = {

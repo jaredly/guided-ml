@@ -62,6 +62,7 @@ module.exports = function (register) {
     widget: Editor
   })
   // 2 dimension
+  /*
   register({
     name: 'dim1',
     title: '1 Dim Statistics', 
@@ -115,7 +116,7 @@ module.exports = function (register) {
         }
       }
     },
-  })
+  })*/
 
   register({
     name: 'custom',
