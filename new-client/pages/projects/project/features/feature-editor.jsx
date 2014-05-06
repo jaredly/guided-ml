@@ -26,8 +26,18 @@ var FeatureEditor = module.exports = React.createClass({
     this.setState({name: e.target.value})
   },
   changeArg: function (name, value) {
-    var update = {}
-    update[name] = {$set: value}
+    var update = {$set: value}
+      , tmp = {}
+    if (Array.isArray(name)) {
+      while (name.length) {
+        tmp[name.pop()] = update
+        update = tmp
+        tmp = {}
+      }
+    } else {
+      tmp[name] = {$set: value}
+      update = tmp
+    }
     var args = React.addons.update(this.state.args, update)
     this.setState({args: args})
   },

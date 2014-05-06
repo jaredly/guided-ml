@@ -4,13 +4,14 @@ module.exports = React.createClass({
   displayName: '1 Dim Statistics',
   getDefaultProps: function () {
     return {
-      onApply: function (){ throw 'override' },
+      changeArg: function (){ throw 'override' },
       dimargs: ['dim'],
       dims: null,
       args: null,
       feature: {},
     }
   },
+  /*
   getInitialState: function () {
     return {
       data: this.props.args // _.cloneDeep(this.props.data)
@@ -34,11 +35,17 @@ module.exports = React.createClass({
     update[name] = {$set: val}
     this.update(update)
   },
+  */
+  changeArg: function (name, e) {
+    this.props.changeArg(name, e.target.value)
+  },
+  changeStat: function (name, e) {
+    this.props.changeArg(name, e.target.checked)
+  },
   render: function () {
     var names = Object.keys(this.props.feature.args.stats || {})
-      , changeStat = this.changeStat
       , stats = this.props.feature.args.stats
-      , data = this.state.data
+      , args = this.props.args
     return (
       <div className='dim-1-statistics'>
         {
@@ -46,7 +53,7 @@ module.exports = React.createClass({
             return (
               <label>
                 {argname}
-                <select value={this.state.data[argname]} onChange={this.changeArg.bind(null, argname)}>
+                <select value={args[argname]} onChange={this.changeArg.bind(null, argname)}>
                   {
                     this.props.dims.map(function (dim) {
                       return <option value={dim}>{dim}</option>
@@ -66,7 +73,10 @@ module.exports = React.createClass({
                 <tr key={name}>
                   <td>
                     <label>
-                      <input onChange={changeStat.bind(null, name)} type='checkbox' checked={data.stats && data.stats[name]}/>
+                      <input
+                        type='checkbox'
+                        onChange={this.changeStat.bind(null, ['stats', name])}
+                        checked={args.stats && args.stats[name]}/>
                       <span>{stat.title}</span>
                     </label>
                   </td>
@@ -77,7 +87,7 @@ module.exports = React.createClass({
                   </td>
                 </tr>
               )
-            })
+            }.bind(this))
           }
         </table>
       </div>
