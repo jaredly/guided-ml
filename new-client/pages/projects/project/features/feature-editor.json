@@ -6,6 +6,16 @@
     "args": {
       "code": "output = data['x'].mean()"
     }
+  },
+  "more": {
+    "name": "Better Feature than yours",
+    "type": "dim1",
+    "buttonText": "Some Action",
+    "dims": ["x", "y", "z"],
+    "args": {
+      "dim": "x",
+      "stats": {"max": true}
+    }
   }
 }
 

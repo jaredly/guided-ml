@@ -1,14 +1,16 @@
 /** @jsx React.DOM */
 
 var DropDown = require('general-ui').DropDown
+  , features = require('../../../../features')
 
 var FeatureTypePicker = module.exports = React.createClass({
   displayName: 'FeatureTypePicker',
   render: function () {
+    var items = Object.keys(features).map(function (name) {
+      return [name, name]
+    })
     return (
-      <div className='feature-type-picker'>
-        Picking all the types. Here we need some things.
-      </div>
+      <DropDown selected={this.props.value} action={this.props.onChange} items={items}/>
     )
   }
 })

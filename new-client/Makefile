@@ -6,7 +6,7 @@ dev:
 	browserify --debug -t reactify -t bulkify -t fusion pages/index.jsx -o dev/bundle.js
 
 css:
-	browserify -p [ splitlessify --filename build/new-css.css --watch ] index.js -o /dev/null
+	lessterfy pages/index.jsx build/mapped.css -t reactify -t bulkify
 
 once:
 	browserify --debug -t reactify -t bulkify index.js -o build/bundle.js

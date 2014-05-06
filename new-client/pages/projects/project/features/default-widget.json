@@ -1,0 +1,17 @@
+{
+  "simple": {
+    "feature": {
+      "args": {
+        "thing": {
+          "name": "thing",
+          "title": "A Thing",
+          "description": "Something is a descriptor",
+          "type": "str-multi"
+        }
+      }
+    },
+    "args": {
+      "thing": "Hello friends"
+    }
+  }
+}

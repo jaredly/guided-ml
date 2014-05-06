@@ -4,12 +4,13 @@ var tree = bulk(__dirname, '../plugins/features/*/index.js')
   , features = {}
   , plugins = tree['..'].plugins.features
 
-function register(name, title, args, doc) {
-  features[name] = {
-    title: title,
-    args: args,
-    name: name,
-    doc: doc
+function register(obj) {
+  features[obj.name] = {
+    description: obj.description,
+    title: obj.title,
+    args: obj.args,
+    name: obj.name,
+    widget: obj.widget || null
   }
 }
 
