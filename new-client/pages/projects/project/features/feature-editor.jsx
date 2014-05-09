@@ -5,6 +5,7 @@ var features = require("../../../../features.js")
   , _ = require('lodash')
 
 var FeatureEditor = module.exports = React.createClass({
+  displayName: 'FeatureEditor',
   getDefaultProps: function () {
     return {
       name: '',

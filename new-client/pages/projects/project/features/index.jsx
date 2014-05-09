@@ -17,7 +17,11 @@ var Features = module.exports = React.createClass({
     this.props.ctx.dao.listFeatures(this.props.ctx.pid, done)
   },
   routes: {
-    _index: AllFeatures,
+    _index: [AllFeatures, function () {
+      return {
+        model: this.state.model
+      }
+    }],
     'new': NewFeature,
     '*': Feature
   },

@@ -2,28 +2,47 @@
 
 var FeatureEditor = require('./feature-editor.jsx')
   , FeatureEffectsViewer = require('./feature-effects-viewer.jsx')
-  , Model = require('react-model')
 
 var Feature = module.exports = React.createClass({
   displayName: 'Feature',
-  mixins: [Model],
-  model: function (done) {
-    this.props.dao.getFeature(this.props.id, done)
+  getDefaultProps: function () {
+    return {
+      feature: null,
+      data: null,
+      classes: null,
+      instance_info: null,
+      loading: false,
+      error: false
+    }
+  },
+  showError: function () {
+    if (!this.props.error) return
+    return 'Error: ' + this.props.error
+  },
+  showLoading: function () {
+    if (!this.props.loading) return
+    return <div className='feature'>Loading...</div>
+  },
+  onChange: function (data) {
+    if (this.props.loading) return
+    this.props.onChange(data)
   },
   render: function () {
-    var feature = this.state.model && this.state.model.feature
-      , data = this.state.model && this.state.model.data
+    var feature = this.props.feature
     return (
       <div className='feature'>
-        {this.state.error && 'Error: ' + this.state.error}
-        {this.state.loading && 'Loading...'}
-        {feaeture && FeatureEditor({
+        {this.showError()}
+        {this.showLoading()}
+        {feature && FeatureEditor({
           name: feature.name,
           type: feature.type,
-          args: feature.args
+          args: feature.args,
+          onChange: this.onChange,
         })}
-        {data && FeatureEffectsViewer({
-          data: data
+        {this.props.data && FeatureEffectsViewer({
+          instance_info: this.props.instance_info,
+          classes: this.props.classes,
+          data: this.props.data
         })}
       </div>
     )

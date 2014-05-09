@@ -1,0 +1,45 @@
+
+.bar-graph {
+
+}
+
+.bar-graph_bars {
+  display: flex;
+  height: 150px;
+  position: relative;
+  cursor: pointer;
+}
+
+.bar-graph_bar-container {
+  flex: 1;
+  background-color: white;
+  position: relative;
+
+  &:hover {
+    background-color: #cce;
+  }
+}
+
+.bar-graph_bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.bar-graph_labels {
+  display: flex;
+}
+
+.bar-graph_lab {
+  flex: 1;
+  text-align: center;
+}
+
+.bar-graph_label {
+  max-width: 100%;
+  margin: 0 20%;
+  overflow: hidden;
+  font-size: 13px;
+}
+

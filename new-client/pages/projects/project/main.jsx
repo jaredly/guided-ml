@@ -1,12 +1,16 @@
 /** @jsx React.DOM */
 
-var Model = require('react-model')
-
 var Main = module.exports = React.createClass({
-  displayName: 'Main',
-  mixins: [Model],
-  model: function (done) {
-    this.props.ctx.dao.getProject(this.props.ctx.pid, done)
+  displayName: 'ProjectMain',
+  getDefaultProps: function () {
+    return {
+      onUploadFile: function (file) {console.log('want to upload file')},
+      goTo: function (where) {console.log('going to', where)},
+      filename: 'the-file.zip',
+      numFeatures: 0,
+      numLearners: 0,
+      numReducers: 0
+    }
   },
   getInitialState: function () {
     return {
@@ -16,40 +20,35 @@ var Main = module.exports = React.createClass({
   changeFile: function (e) {
     this.setState({file: e.target.files[0]})
   },
-  onSubmit: function () {
-    this.props.ctx.dao.changeProjectData(this.state.file, function (err, filename) {
-      this.state.model.filename = filename
-      this.setState({file: null})
-    }.bind(this))
-  },
   goToFeature: function () {
-    if (!this.state.model.features.length) {
+    if (!this.props.numFeatures) {
       this.props.goTo('features/new')
     } else {
       this.props.goTo('features')
     }
   },
+  onSubmit: function () {
+    this.props.onUploadFile(this.state.file)
+  },
   render: function () {
-    var model = this.state.model
-    if (!model) {
-      return <div className='project-main'>Loading...</div>
-    }
     return (
       <div className='project-main'>
         <div className='project-main__source'>
-          {'Source: ' + model.filename}
+          <div className='project-main_filename'>
+            {this.props.filename}
+          </div>
           Replace with a different data file:
           <input type='file' onChange={this.changeFile}/>
           <button onClick={this.onSubmit}>Upload</button>
         </div>
         <div className='project-main__features' onClick={this.goToFeature}>
-          {model.features.length ? model.features.length + ' Features' : 'Add a feature'}
+          {this.props.numFeatures ? this.props.numFeatures + ' Features' : 'Add a feature'}
         </div>
         <div className='project-main__reducers'>
-          {model.reducers.length + ' Reducers'}
+          {this.props.numReducers + ' Reducers'}
         </div>
         <div className='project-main__learners'>
-          {model.learners.length + ' Learners'}
+          {this.props.numLearners + ' Learners'}
         </div>
       </div>
     )

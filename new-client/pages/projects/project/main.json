@@ -1,0 +1,14 @@
+{
+  "blank": {
+    "filename": "GreatData.zip",
+    "numFeatures": 0,
+    "numReducers": 0,
+    "numLearners": 0
+  },
+  "some": {
+    "filename": "Mores.zip",
+    "numFeatures": 10,
+    "numReducers": 1,
+    "numLearners": 2
+  }
+}

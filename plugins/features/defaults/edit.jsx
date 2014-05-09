@@ -11,43 +11,20 @@ module.exports = React.createClass({
       feature: {},
     }
   },
-  /*
-  getInitialState: function () {
-    return {
-      data: this.props.args // _.cloneDeep(this.props.data)
-    }
-  },
-  update: function (update) {
-    if (!this.state.data.stats) this.state.data.stats = {}
-    this.setState({
-      data: React.addons.update(this.state.data, update)
-    })
-  },
-  changeStat: function (name, e) {
-    var val = e.target.checked
-      , update = {stats: {}}
-    update.stats[name] = {$set: val}
-    this.update(update)
-  },
-  changeArg: function (name, e) {
-    var val = e.target.value
-      , update = {}
-    update[name] = {$set: val}
-    this.update(update)
-  },
-  */
   changeArg: function (name, e) {
     this.props.changeArg(name, e.target.value)
   },
+  /*
   changeStat: function (name, e) {
     this.props.changeArg(name, e.target.checked)
   },
+  */
   render: function () {
     var names = Object.keys(this.props.feature.args.stats || {})
       , stats = this.props.feature.args.stats
       , args = this.props.args
     return (
-      <div className='dim-1-statistics'>
+      <div className='dim1-stats'>
         {
           this.props.dimargs.map(function (argname) {
             return (
@@ -65,31 +42,22 @@ module.exports = React.createClass({
           }.bind(this))
         }
         <h4>Which Stats</h4>
-        <table>
+        <div className='dim1-stats_buttons'>
           {
             names.map(function (name, i) {
               var stat = stats[name]
+                , checked = args.stats && args.stats[name]
+                , cls = 'dim1-stats_button' + (checked ? ' dim1-stats_button--checked' : '')
               return (
-                <tr key={name}>
-                  <td>
-                    <label>
-                      <input
-                        type='checkbox'
-                        onChange={this.changeStat.bind(null, ['stats', name])}
-                        checked={args.stats && args.stats[name]}/>
-                      <span>{stat.title}</span>
-                    </label>
-                  </td>
-                  <td>
-                    <p>
-                      {stat.description}
-                    </p>
-                  </td>
-                </tr>
+                <button className={cls}
+                  title={stat.description}
+                  onClick={this.props.changeArg.bind(null, ['stats', name], !checked)}>
+                  {stat.title}
+                </button>
               )
             }.bind(this))
           }
-        </table>
+        </div>
       </div>
     )
   }

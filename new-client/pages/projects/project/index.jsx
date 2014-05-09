@@ -9,26 +9,85 @@ var DropDown = require('general-ui').DropDown
   , Router = require('react-router')
   , Model = require('react-model')
 
+function makeUpdate(attrs, value) {
+  var update = {}
+    , c = update
+  while (attrs.length) {
+    c = c[attrs.shift()] = {}
+  }
+  c['$set'] = value
+  return update
+}
+
 var Project = module.exports = React.createClass({
   displayName: 'Project',
   mixins: [Router, Model],
   routes: {
-    '': Main,
+    _index: [Main, function () {
+      var model
+      return {
+        onUploadFile: this.onUploadFile,
+        filename: model.filename,
+        numFeatures: model.features.length,
+        numReducers: model.features.length,
+        numLearners: model.learners.length
+      }
+    }],
     'features': Features,
     'learners': Learners,
-    // 'reducers': Reducers,
   },
+  model: {
+    model: Project,
+    args: function () {
+      return [this.props.param]
+    }
+  },
+  /*
   model: function (done) {
-    this.props.ctx.dao.getProject(this.props.param, done)
+    Project.get(this.props.param, done)
   },
+  */
   getContext: function () {
     return {
-      pid: this.props.param
+      pid: this.props.param,
+      project: this.state.model ? (
+        new Project(this.state.model, this.onProjectChanged)
+      ) : false
     }
+  },
+  // onProjectChanged(err, model)
+  // onProjectChanged(err, attr, value)
+  // onProjectChanged(err, [path, to, attr], value)
+  onProjectChanged: function (err, attr, value) {
+    if (err) {
+      return this.setState({modelError: err})
+    }
+    if (arguments.length === 1) {
+      return this.setState({model: attr})
+    }
+    if (!Array.isArray(attr)) {
+      attr = [attr]
+    }
+    this.setState({
+      model: React.addons.update(this.state.model, makeUpdate(attr, value))
+    })
   },
   switchPage: function (page) {
     this.goTo(page)
   },
+
+  // for main
+
+  onUploadFile: function (file) {
+    this.props.ctx.dao.changeProjectData(file, function (err, filename) {
+      // this.state.model.filename = filename
+      var model = React.addons.update(model, {
+        filename: {$set: filename}
+      })
+      this.setState({model: model})
+    }.bind(this))
+  },
+
   render: function () {
     var route = this.state._route
       , name = this.state.model ? this.state.model.name : 'Project Loading...'

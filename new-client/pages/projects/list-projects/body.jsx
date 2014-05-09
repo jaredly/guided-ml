@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 
 var Body = module.exports = React.createClass({
-  displayName: 'Body',
+  displayName: 'ListProjectsBody',
   getDefaultProps: function () {
     return {
-      goTo: function () {throw 'override'},
+      goTo: function (place, absolute, force) {console.log('going to here', place)},
       model: []
     }
   },

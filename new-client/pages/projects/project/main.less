@@ -6,14 +6,21 @@
   padding: 15px;
 }
 
+.project-main_filename {
+  font-weight: bold;
+}
+
 .m-item {
   padding: 10px 20px;
-  border: 1px solid #bbb;
-  cursor: pointer;
+  border: 1px solid #ddd;
 
   &:not(:last-child) {
     margin-bottom: 10px;
   }
+}
+
+.m-clickable {
+  cursor: pointer;
 
   &:hover {
     background-color: #ede;
@@ -26,14 +33,17 @@
 
 .project-main__features {
   .m-item;
+  .m-clickable;
 }
 
 .project-main__reducers {
   .m-item;
+  .m-clickable;
 }
 
 .project-main__learners {
   .m-item;
+  .m-clickable;
 }
 
 
